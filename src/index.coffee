@@ -36,158 +36,80 @@ gl.enableVertexAttribArray positionLocation
 gl.vertexAttribPointer positionLocation, 2, gl.FLOAT, false, 0, 0
 
 
-# resolutionLocation = gl.getUniformLocation(program, "u_resolution")
-# gl.uniform2f(resolutionLocation, canvas.width, canvas.height)
-# positionLocation = gl.getAttribLocation program, "a_position"
-#
-# buffer = gl.createBuffer()
-#
-# gl.bindBuffer gl.ARRAY_BUFFER, buffer
+counter = 0
 
-rayy = new Float32Array [
-    -1.0, -1.0,
-    1.0, -1.0,
-    -1.0, 1.0,
-    -1.0, 1.0,
-    1, -1.0,
-    1.0, 1.0
+
+t_mat_000 = [
+    1, 0, 0,
+    0, 1, 0,
+    5, 5, 1
+]
+
+
+t_mat_001 = ->
+    mod = counter % 200
+    # switch mod
+    if mod < 50
+        x_offset = 5
+        y_offset = 5
+    else if mod > 50 and mod < 100
+        x_offset = 5
+        y_offset = -5
+    else if mod > 100 and mod < 150
+        x_offset = -5
+        y_offset = -5
+    else
+        x_offset = -5
+        y_offset = 5
+
+    return [
+        1, 0, 0,
+        0, 1, 0,
+        x_offset, y_offset, 1
     ]
-rayy4 = new Float32Array [
-    10, 20,
-    80, 20,
-    10, 50,
-
-
-    10, 50,
-    80, 20,
-    80, 50
-]
-
-rayy5 = new Float32Array [
-    50, 60,
-    480, 60,
-    50, 1580,
-
-
-    10, 30,
-    40, 20,
-    40, 50
-
-]
-
-
-# gl.enableVertexAttribArray positionLocation
-# gl.vertexAttribPointer positionLocation, 2, gl.FLOAT, false, 0, 0
-#
-# gl.bufferData gl.ARRAY_BUFFER, rayy4s, gl.STATIC_DRAW
-#
-#
-# gl.drawArrays gl.TRIANGLES, 0, 6
 
 
 
 
-
-gl.bufferData gl.ARRAY_BUFFER, rayy4, gl.STATIC_DRAW
-gl.drawArrays gl.TRIANGLES, 0, 6
-
-# rayy2 = new Float32Array [
-#     -1.0, -1.0,
-#     1.0, -1.0,
-#     -2.0, 1.0,
-#     -1.0, 1.0,
-#     1, -1.0,
-#     1.0, 1.0
-# ]
-
-set_rectangle = (gl, x, y, width, height) ->
-    x1 = x
-    x2 = x + width
-    y1 = y
-    y2 = y + height
+set_ship_001 = (gl, old_pos) ->
+    t_mat = t_mat_001()
+    # c t_mat
+    { 0: x, 1: y } = new_pos = vec2.transformMat3 vec2.create(), old_pos, t_mat
     rayy = new Float32Array [
-        x1, y1,
-        x2, y1,
-        x1, y2,
-        x1, y2,
-        x2, y1,
-        x2, y2
+        x, y,
+        x - 15, y + 15,
+        x + 15, y + 15
     ]
     gl.bufferData gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW
-
+    return new_pos
 
 random_int = (range) ->
     return Math.floor(Math.random() * range)
 
-
-outer = ->
-    gl.drawArrays gl.TRIANGLES, 0, 6
-
-
-@gl = gl
-
-for i in [0 .. 20]
-    set_rectangle @gl, random_int(200), random_int(200), random_int(50), random_int(50)
-
-    @gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-    # outer()
-    @gl.drawArrays gl.TRIANGLES, 0, 6
-
-counter = 0
+random_int_negpos = (range) ->
+    if Math.random() > .5
+        return Math.floor(Math.random() * range)
+    else
+        return -(Math.floor(Math.random() * range))
 
 
-set_rectangle gl, random_int(200), random_int(200), random_int(500), random_int(50)
-
-gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-# outer()
-gl.drawArrays gl.TRIANGLES, 0, 6
-set_rectangle gl, random_int(200), random_int(200), random_int(50), random_int(500)
-
-# @gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-# # outer()
-# @gl.drawArrays gl.TRIANGLES, 0, 6
 
 
+game_loop = (gl, set_ship) ->
+    ship_pos = [300, 300]
+    return ->
+        ship_pos = set_ship(gl, ship_pos)
+        gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
+        gl.drawArrays gl.TRIANGLES, 0, 3
+
+
+
+
+looper = game_loop(gl, set_ship_001)
 interval = setInterval ->
     counter++
-    if counter < 1000
-        set_rectangle gl, counter, counter, random_int(50), random_int(50)
-        gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-        gl.drawArrays gl.TRIANGLES, 0, 6
-        # set_rectangle gl, random_int(200), random_int(200), random_int(50), random_int(50)
-        # gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-        # gl.drawArrays gl.TRIANGLES, 0, 6
-        # set_rectangle gl, random_int(200), random_int(200), random_int(150), random_int(150)
-        # gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-        # gl.drawArrays gl.TRIANGLES, 0, 6
+    if counter < 1500
+        looper()
     else
         clearInterval interval
-, 30
-
-
-
-# setTimeout =>
-#     gl.bufferData gl.ARRAY_BUFFER, rayy5, gl.STATIC_DRAW
-#     # gl.enableVertexAttribArray positionLocation
-#     # gl.vertexAttribPointer positionLocation, 2, gl.FLOAT, false, 0, 0
-#
-#     gl.drawArrays gl.TRIANGLES, 0, 6
-#
-# , 1000
-
-
-# func_002 = (rayy) =>
-#     # gl.enableVertexAttribArray positionLocation
-#     # gl.vertexAttribPointer positionLocation, 2, gl.FLOAT, false, 0,
-#     gl.bufferData gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW
-#     gl.drawArrays gl.TRIANGLES, 0, 3
-#
-# rayy3 = [
-#     -01, -0.001,
-#     -.001, -.005,
-#     -.2, -.23
-# ]
-#
-# setTimeout =>
-#     func_002 rayy3
-# , 1000
+, 10

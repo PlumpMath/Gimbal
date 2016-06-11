@@ -51,7 +51,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var buffer, canvas, colorLocation, counter, fragment_shader, fragment_shader_source, gl, i, interval, j, outer, positionLocation, program, random_int, rayy, rayy4, rayy5, resolutionLocation, set_rectangle, vertex_shader, vertex_shader_source;
+	var buffer, canvas, colorLocation, counter, fragment_shader, fragment_shader_source, game_loop, gl, interval, looper, positionLocation, program, random_int, random_int_negpos, resolutionLocation, set_ship_001, t_mat_000, t_mat_001, vertex_shader, vertex_shader_source;
 
 	__webpack_require__(2);
 
@@ -99,62 +99,70 @@
 
 	gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-	rayy = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1, -1.0, 1.0, 1.0]);
+	counter = 0;
 
-	rayy4 = new Float32Array([10, 20, 80, 20, 10, 50, 10, 50, 80, 20, 80, 50]);
+	t_mat_000 = [1, 0, 0, 0, 1, 0, 5, 5, 1];
 
-	rayy5 = new Float32Array([50, 60, 480, 60, 50, 1580, 10, 30, 40, 20, 40, 50]);
+	t_mat_001 = function() {
+	  var mod, x_offset, y_offset;
+	  mod = counter % 200;
+	  if (mod < 50) {
+	    x_offset = 5;
+	    y_offset = 5;
+	  } else if (mod > 50 && mod < 100) {
+	    x_offset = 5;
+	    y_offset = -5;
+	  } else if (mod > 100 && mod < 150) {
+	    x_offset = -5;
+	    y_offset = -5;
+	  } else {
+	    x_offset = -5;
+	    y_offset = 5;
+	  }
+	  return [1, 0, 0, 0, 1, 0, x_offset, y_offset, 1];
+	};
 
-	gl.bufferData(gl.ARRAY_BUFFER, rayy4, gl.STATIC_DRAW);
-
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-	set_rectangle = function(gl, x, y, width, height) {
-	  var x1, x2, y1, y2;
-	  x1 = x;
-	  x2 = x + width;
-	  y1 = y;
-	  y2 = y + height;
-	  rayy = new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]);
-	  return gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
+	set_ship_001 = function(gl, old_pos) {
+	  var new_pos, rayy, ref, t_mat, x, y;
+	  t_mat = t_mat_001();
+	  ref = new_pos = vec2.transformMat3(vec2.create(), old_pos, t_mat), x = ref[0], y = ref[1];
+	  rayy = new Float32Array([x, y, x - 15, y + 15, x + 15, y + 15]);
+	  gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
+	  return new_pos;
 	};
 
 	random_int = function(range) {
 	  return Math.floor(Math.random() * range);
 	};
 
-	outer = function() {
-	  return gl.drawArrays(gl.TRIANGLES, 0, 6);
+	random_int_negpos = function(range) {
+	  if (Math.random() > .5) {
+	    return Math.floor(Math.random() * range);
+	  } else {
+	    return -(Math.floor(Math.random() * range));
+	  }
 	};
 
-	this.gl = gl;
+	game_loop = function(gl, set_ship) {
+	  var ship_pos;
+	  ship_pos = [300, 300];
+	  return function() {
+	    ship_pos = set_ship(gl, ship_pos);
+	    gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
+	    return gl.drawArrays(gl.TRIANGLES, 0, 3);
+	  };
+	};
 
-	for (i = j = 0; j <= 20; i = ++j) {
-	  set_rectangle(this.gl, random_int(200), random_int(200), random_int(50), random_int(50));
-	  this.gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
-	  this.gl.drawArrays(gl.TRIANGLES, 0, 6);
-	}
-
-	counter = 0;
-
-	set_rectangle(gl, random_int(200), random_int(200), random_int(500), random_int(50));
-
-	gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
-
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-	set_rectangle(gl, random_int(200), random_int(200), random_int(50), random_int(500));
+	looper = game_loop(gl, set_ship_001);
 
 	interval = setInterval(function() {
 	  counter++;
-	  if (counter < 1000) {
-	    set_rectangle(gl, counter, counter, random_int(50), random_int(50));
-	    gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
-	    return gl.drawArrays(gl.TRIANGLES, 0, 6);
+	  if (counter < 1500) {
+	    return looper();
 	  } else {
 	    return clearInterval(interval);
 	  }
-	}, 30);
+	}, 10);
 
 
 /***/ },
