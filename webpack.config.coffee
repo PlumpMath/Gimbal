@@ -19,6 +19,12 @@ module.exports = config =
         colors: on
         reasons: on
     module:
+        preLoaders: [
+            {
+                test: /\.js$/
+                loader: "source-map-loader"
+            }
+        ]
         loaders: [
             {
                 test: /\.glsl$/
