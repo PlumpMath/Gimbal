@@ -19,8 +19,17 @@ This is just a prototype project to get started (again) with WebGL.  With proof 
 
 ### ttd
 
-- Start using this http://twgljs.org/docs/
+- Start using this http://twgljs.org/docs/, after learn low level stuff well enough to comprehend its usefulness
 
+- maybe start using THREE.js after learning enough low level stuff / home rolling ortho projections enough to understand its usefulness
+
+- http://hammerjs.github.io/ for mouse gestures
+
+- webrtc audio and
+
+- webrtc for p2p play if latency not too bad.
+
+- webworkers concurrency if perf gains and if a strategy to optimisie
 
 ### after implement 2D version, then implement a 3D version:
 
