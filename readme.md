@@ -19,7 +19,7 @@ This is just a prototype project to get started (again) with WebGL.  With proof 
 
 ### how to player
 **at alpha**
-- control ship1 with the left and right arrow keys to rotate, the up arrow key to apply thrust
+- control ship1 with the left and right arrow keys to rotate, the up arrow key to apply thrust, 'z' key shoots torpedos from ship1.  hitting ship2 will result in primitive kill graphics.
 
 - at the moment the other ship with whatever the x, c, and v keys are on the dvorak keyboard.  i'll fix this later today.
 
