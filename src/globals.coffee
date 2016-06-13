@@ -16,6 +16,7 @@ arq =
     vec2 : gl_mat.vec2
     cos : Math.cos
     sin : Math.sin
+    pi : Math.PI
 
 
 for k, v of arq

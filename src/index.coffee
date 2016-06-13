@@ -33,8 +33,18 @@ counter = 0
 delta_thrust = 0
 delta_rota_rad = 0
 
+ship2_delta_thrust = 0
+ship2_delta_rota_rad = 0
+
 document.addEventListener 'keydown', (e) ->
+
     switch e.keyCode
+        when 81
+            ship2_delta_rota_rad -= .25
+        when 75
+            ship2_delta_rota_rad += .25
+        when 74
+            ship2_delta_thrust += .5
         when 37
             delta_rota_rad = delta_rota_rad - .25
         when 39
@@ -43,6 +53,7 @@ document.addEventListener 'keydown', (e) ->
             delta_thrust = delta_thrust + .5
 
 set_ship_002 = ({gl, ship_state, deltas}) ->
+    c 'ship_state', ship_state
     { del_vel_x, del_vel_y, del_rota_rad, shots_fired, del_time } = deltas
     { pos_x, pos_y, vel_x, vel_y, rota_rad } = ship_state
     new_vel_x = vel_x + del_vel_x
@@ -101,17 +112,37 @@ game_loop_001 = (gl, set_ship) ->
         vel_x: .5
         vel_y: .5
         rota_rad: 0
+
+    ship_2 =
+        pos_x: 800
+        pos_y: 300
+        vel_x: .5
+        vel_y: .5
+        rota_rad: 0
     return ->
         deltas =
             del_rota_rad: delta_rota_rad
             del_vel_x: cos(ship_state.rota_rad) * delta_thrust
             del_vel_y: sin(ship_state.rota_rad) * delta_thrust
             del_time: .1
+        deltas2 =
+            del_rota_rad: ship2_delta_rota_rad
+            del_vel_x: cos(ship_2.rota_rad) * ship2_delta_thrust
+            del_vel_y: sin(ship_2.rota_rad) * ship2_delta_thrust
+            del_time: .1
+
         ship_state = set_ship({gl, ship_state, deltas})
         delta_rota_rad = 0
         delta_thrust = 0
         gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
         gl.drawArrays gl.TRIANGLES, 0, 3
+        ship_2 = set_ship({gl, ship_state: ship_2, deltas: deltas2})
+        gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
+        gl.drawArrays gl.TRIANGLES, 0, 3
+        ship2_delta_thrust = 0
+        ship2_delta_rota_rad = 0
+
+
 
 looper = game_loop_001(gl, set_ship_002)
 interval = setInterval ->
