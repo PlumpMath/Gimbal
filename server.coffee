@@ -26,7 +26,7 @@ app.all '/*', (req, res, next) ->
     res.sendFile path.join(public_dir, index)
 
 app.use(express.static(public_dir))
-port = process.env.PORT or 3000
+port = process.env.PORT or 3883
 
 app.listen port, ->
     c 'server listening on ', port
