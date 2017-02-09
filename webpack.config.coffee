@@ -30,9 +30,6 @@ module.exports = config =
                 test: /\.glsl$/
                 loader: 'webpack-glsl'
             },
-                # test: /\.glsl$/
-                # include: SHADER_PATH
-                # loader: 'webpack-glsl'
             {
                 test: /\.coffee$/
                 loaders: ['coffee-loader', 'source-map-loader']

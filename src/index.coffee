@@ -53,6 +53,20 @@ random_int = (range) ->
     return Math.floor(Math.random() * range)
 
 game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
+
+    background_rayy = new Float32Array [
+        0, 0
+        0, 1000,
+        2000, 0
+    ]
+    bk_rayy2 = new Float32Array [
+        2000, 0,
+        0, 1000,
+        2000, 1000
+    ]
+
+
+
     torpedos_stack = []
 
     ship_state =
@@ -69,6 +83,19 @@ game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
         vel_y: .5
         rota_rad: 0
     return ->
+
+        # c 'background_rayy', background_rayy
+        gl.bufferData gl.ARRAY_BUFFER, background_rayy, gl.STATIC_DRAW
+        gl.uniform4f colorLocation, 0, 0, 0, 1
+        gl.drawArrays gl.TRIANGLES, 0, 3
+
+        gl.bufferData gl.ARRAY_BUFFER, bk_rayy2, gl.STATIC_DRAW
+        gl.uniform4f colorLocation, 0, 0, 0, 1
+        gl.drawArrays gl.TRIANGLES, 0, 3
+
+
+
+
         deltas =
             del_rota_rad: delta_rota_rad
             del_vel_x: cos(ship_state.rota_rad) * delta_thrust
@@ -81,13 +108,12 @@ game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
             del_time: .1
 
         ship_state = set_ship({gl, ship_state, deltas})
-        # gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-        gl.uniform4f colorLocation, 0, 0, 1, 1
+        gl.uniform4f colorLocation, 0, .9, .7, 1
         gl.drawArrays gl.TRIANGLES, 0, 3
 
         ship_2 = set_ship({gl, ship_state: ship_2, deltas: deltas2})
         # gl.uniform4f colorLocation, Math.random(), Math.random(), Math.random(), 1
-        gl.uniform4f colorLocation, 1, 0, 0, 1
+        gl.uniform4f colorLocation, .1, .8, .2, 1
         gl.drawArrays gl.TRIANGLES, 0, 3
 
 

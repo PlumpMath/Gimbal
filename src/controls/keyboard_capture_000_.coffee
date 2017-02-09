@@ -7,7 +7,7 @@ module.exports = ({
     }) =>
 
     document.addEventListener 'keydown', (e) ->
-        c e.keyCode
+        # c e.keyCode
         switch e.keyCode
             when 88, 81
                 ship2_delta_rota_rad -= .1

@@ -1,6 +1,6 @@
 module.exports = ({canvas})->
     set_ship_002 = ({gl, ship_state, deltas}) ->
-    # c 'ship_state', ship_state
+        # c 'ship_state', ship_state
         { del_vel_x, del_vel_y, del_rota_rad, shots_fired, del_time } = deltas
         { pos_x, pos_y, vel_x, vel_y, rota_rad } = ship_state
         new_vel_x = vel_x + del_vel_x

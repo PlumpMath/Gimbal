@@ -16,13 +16,12 @@ module.exports = ({canvas})->
             { position_x, position_y, velocity_x, velocity_y, orientation_radians } = torpedo
             torpedo.position_x = (position_x + (delta_time * velocity_x))
             torpedo.position_y = (position_y + (delta_time * velocity_y))
-            if (Math.abs(ship_state.pos_x - torpedo.position_x) < 3) and (Math.abs(ship_state.pos_y - torpedo.position_y) < 3)
+            if (Math.abs(ship_state.pos_x - torpedo.position_x) < 3) and (Math.abs(ship_state.pos_y - torpedo.position_y) < 10)
                 ship_kill = true
                 kull_list.push idx
-            if (Math.abs(ship_2.pos_x - torpedo.position_x) < 3) and (Math.abs(ship_2.pos_y - torpedo.position_y) < 3)
+            if (Math.abs(ship_2.pos_x - torpedo.position_x) < 3) and (Math.abs(ship_2.pos_y - torpedo.position_y) < 10)
                 ship2_kill = true
                 kull_list.push idx
-
             translation_t = [
                 1, 0, 0,
                 0, 1, 0,
