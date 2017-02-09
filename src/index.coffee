@@ -47,23 +47,13 @@ set_torpedos_002 = require('./physical_space/torpedos_002_.coffee') {canvas}
 
 set_ship_002 = require('./physical_space/set_ship_002_.coffee') {canvas}
 
-
+galaxy_rayy = require('./physical_space/stars.coffee').default()
 
 random_int = (range) ->
     return Math.floor(Math.random() * range)
 
 game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
 
-    background_rayy = new Float32Array [
-        0, 0
-        0, 1000,
-        2000, 0
-    ]
-    bk_rayy2 = new Float32Array [
-        2000, 0,
-        0, 1000,
-        2000, 1000
-    ]
 
 
 
@@ -82,16 +72,51 @@ game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
         vel_x: .5
         vel_y: .5
         rota_rad: 0
+
+    background_rayy = new Float32Array [
+        0, 0
+        0, 1000,
+        2000, 0
+    ]
+    bk_rayy2 = new Float32Array [
+        2000, 0,
+        0, 1000,
+        2000, 1000
+    ]
+
+    bk_rayy_3 = new Float32Array [
+        0, 0,
+        0, 1000,
+        2000, 0
+        2000, 0,
+        0, 1000,
+        2000, 1000
+    ]
+
     return ->
 
-        # c 'background_rayy', background_rayy
-        gl.bufferData gl.ARRAY_BUFFER, background_rayy, gl.STATIC_DRAW
-        gl.uniform4f colorLocation, 0, 0, 0, 1
-        gl.drawArrays gl.TRIANGLES, 0, 3
 
-        gl.bufferData gl.ARRAY_BUFFER, bk_rayy2, gl.STATIC_DRAW
+
+        gl.bufferData gl.ARRAY_BUFFER, bk_rayy_3, gl.STATIC_DRAW
         gl.uniform4f colorLocation, 0, 0, 0, 1
-        gl.drawArrays gl.TRIANGLES, 0, 3
+        gl.drawArrays gl.TRIANGLES, 0, 6
+
+
+        # star_rayy = new Float32Array [
+        #     100, 200,
+        #     100, 300,
+        #     200, 300
+        # ]
+        # gl.bufferData gl.ARRAY_BUFFER, star_rayy, gl.STATIC_DRAW
+        # gl.uniform4f colorLocation, 1, Math.random(), 1, 1
+        # gl.drawArrays gl.TRIANGLES, 0, 3
+
+        for star_rayy_2, idx in galaxy_rayy
+            do (star_rayy_2, idx) =>
+                gl.bufferData gl.ARRAY_BUFFER, star_rayy_2, gl.STATIC_DRAW
+                gl.uniform4f colorLocation, 1, Math.random(), 1, 1
+                gl.drawArrays gl.TRIANGLES, 0, 3
+
 
 
 

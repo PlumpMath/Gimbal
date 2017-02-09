@@ -51,7 +51,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var canvas, colorLocation, counter, delta_rota_rad, delta_thrust, game_loop_001, gl, interval, looper, random_int, ref, set_blowup_002, set_ship_002, set_torpedos_002, ship2_delta_rota_rad, ship2_delta_thrust, ship2_torpedo_fired, torpedo_fired;
+	var canvas, colorLocation, counter, delta_rota_rad, delta_thrust, galaxy_rayy, game_loop_001, gl, interval, looper, random_int, ref, set_blowup_002, set_ship_002, set_torpedos_002, ship2_delta_rota_rad, ship2_delta_thrust, ship2_torpedo_fired, torpedo_fired;
 
 	__webpack_require__(2);
 
@@ -106,14 +106,14 @@
 	  canvas: canvas
 	});
 
+	galaxy_rayy = __webpack_require__(372)["default"]();
+
 	random_int = function(range) {
 	  return Math.floor(Math.random() * range);
 	};
 
 	game_loop_001 = function(gl, set_ship, set_torpedos, set_blowup) {
-	  var background_rayy, bk_rayy2, ship_2, ship_state, torpedos_stack;
-	  background_rayy = new Float32Array([0, 0, 0, 1000, 2000, 0]);
-	  bk_rayy2 = new Float32Array([2000, 0, 0, 1000, 2000, 1000]);
+	  var background_rayy, bk_rayy2, bk_rayy_3, ship_2, ship_state, torpedos_stack;
 	  torpedos_stack = [];
 	  ship_state = {
 	    pos_x: 800,
@@ -129,14 +129,25 @@
 	    vel_y: .5,
 	    rota_rad: 0
 	  };
+	  background_rayy = new Float32Array([0, 0, 0, 1000, 2000, 0]);
+	  bk_rayy2 = new Float32Array([2000, 0, 0, 1000, 2000, 1000]);
+	  bk_rayy_3 = new Float32Array([0, 0, 0, 1000, 2000, 0, 2000, 0, 0, 1000, 2000, 1000]);
 	  return function() {
-	    var basket_rayys, cheunk_basket, delta_time, deltas, deltas2, i, j, k, len, len1, len2, rayy, ref1, results, ship2_kill, ship_kill, tor_delta_x, tor_delta_y;
-	    gl.bufferData(gl.ARRAY_BUFFER, background_rayy, gl.STATIC_DRAW);
+	    var basket_rayys, cheunk_basket, delta_time, deltas, deltas2, fn, i, idx, j, k, l, len, len1, len2, len3, rayy, ref1, results, ship2_kill, ship_kill, star_rayy_2, tor_delta_x, tor_delta_y;
+	    gl.bufferData(gl.ARRAY_BUFFER, bk_rayy_3, gl.STATIC_DRAW);
 	    gl.uniform4f(colorLocation, 0, 0, 0, 1);
-	    gl.drawArrays(gl.TRIANGLES, 0, 3);
-	    gl.bufferData(gl.ARRAY_BUFFER, bk_rayy2, gl.STATIC_DRAW);
-	    gl.uniform4f(colorLocation, 0, 0, 0, 1);
-	    gl.drawArrays(gl.TRIANGLES, 0, 3);
+	    gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    fn = (function(_this) {
+	      return function(star_rayy_2, idx) {
+	        gl.bufferData(gl.ARRAY_BUFFER, star_rayy_2, gl.STATIC_DRAW);
+	        gl.uniform4f(colorLocation, 1, Math.random(), 1, 1);
+	        return gl.drawArrays(gl.TRIANGLES, 0, 3);
+	      };
+	    })(this);
+	    for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
+	      star_rayy_2 = galaxy_rayy[idx];
+	      fn(star_rayy_2, idx);
+	    }
 	    deltas = {
 	      del_rota_rad: delta_rota_rad,
 	      del_vel_x: cos(ship_state.rota_rad) * delta_thrust,
@@ -193,8 +204,8 @@
 	      ship_state: ship_state,
 	      ship_2: ship_2
 	    }), torpedos_stack = ref1.torpedos_stack, basket_rayys = ref1.basket_rayys, ship_kill = ref1.ship_kill, ship2_kill = ref1.ship2_kill;
-	    for (i = 0, len = basket_rayys.length; i < len; i++) {
-	      rayy = basket_rayys[i];
+	    for (j = 0, len1 = basket_rayys.length; j < len1; j++) {
+	      rayy = basket_rayys[j];
 	      gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
 	      gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
 	      gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -210,8 +221,8 @@
 	      cheunk_basket = set_blowup({
 	        ship: ship_2
 	      });
-	      for (j = 0, len1 = cheunk_basket.length; j < len1; j++) {
-	        rayy = cheunk_basket[j];
+	      for (k = 0, len2 = cheunk_basket.length; k < len2; k++) {
+	        rayy = cheunk_basket[k];
 	        gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
 	        gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
 	        gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -222,8 +233,8 @@
 	        ship: ship_state
 	      });
 	      results = [];
-	      for (k = 0, len2 = cheunk_basket.length; k < len2; k++) {
-	        rayy = cheunk_basket[k];
+	      for (l = 0, len3 = cheunk_basket.length; l < len3; l++) {
+	        rayy = cheunk_basket[l];
 	        gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
 	        gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
 	        results.push(gl.drawArrays(gl.TRIANGLES, 0, 3));
@@ -51779,6 +51790,23 @@
 	    return new_state;
 	  };
 	  return set_ship_002;
+	};
+
+
+/***/ },
+/* 372 */
+/***/ function(module, exports) {
+
+	exports["default"] = function() {
+	  var galaxy_rayy, i, idx, origin_vertex_x, origin_vertex_y, the_star;
+	  galaxy_rayy = [];
+	  for (idx = i = 0; i <= 922; idx = ++i) {
+	    origin_vertex_x = parseInt(Math.random() * 2000);
+	    origin_vertex_y = parseInt(Math.random() * 1000);
+	    the_star = new Float32Array([origin_vertex_x, origin_vertex_y, origin_vertex_x - 2, origin_vertex_y + 2, origin_vertex_x + 1, origin_vertex_y]);
+	    galaxy_rayy.push(the_star);
+	  }
+	  return galaxy_rayy;
 	};
 
 
