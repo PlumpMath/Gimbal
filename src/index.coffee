@@ -129,8 +129,8 @@ game_loop_001 = (gl, set_ship, set_torpedos, set_blowup) ->
 
         if ship2_torpedo_fired is true
             # we want to set the torpedo ahead of the ship a bit outside the delta hit range
-            tor_delta_x = cos(ship_2.rota_rad) * 3.5
-            tor_delta_y = sin(ship_2.rota_rad) * 3.5
+            tor_delta_x = cos(ship_2.rota_rad) * 10
+            tor_delta_y = sin(ship_2.rota_rad) * 10
             torpedos_stack.push
                 position_x: ship_2.pos_x + tor_delta_x
                 position_y: ship_2.pos_y + tor_delta_y
