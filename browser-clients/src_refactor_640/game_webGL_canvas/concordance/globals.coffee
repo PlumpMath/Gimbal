@@ -17,3 +17,5 @@ window.pi = Math.PI.bind Math
 
 
 window.EE = require "wolfy87-eventemitter"
+
+window.primus = new Primus('http://localhost:3883', {})
