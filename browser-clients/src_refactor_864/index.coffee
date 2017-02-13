@@ -4,7 +4,7 @@ c = console.log.bind console
 
 c 'hello'
 
-Worker = require('worker-loader!./worker')
+Worker = require('worker-loader?inline!./worker')
 
 
 worker = new Worker()

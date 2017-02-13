@@ -1,7 +1,7 @@
 
 
 
-require('./globals.coffee')
+require './globals.coffee'
 
 
 Dispatch = new EE()
