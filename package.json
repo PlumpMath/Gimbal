@@ -38,8 +38,10 @@
         "redux-immutable": "latest",
         "redux-thunk": "latest",
         "shortid": "latest",
+        "webpack": "latest",
         "webpack-glsl-loader": "latest",
         "wolfy87-eventemitter": "latest",
+        "worker-loader": "latest",
         "ws": "latest"
 
     }

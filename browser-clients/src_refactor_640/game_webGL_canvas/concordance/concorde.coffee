@@ -1,12 +1,14 @@
 
 
 
+require('./globals.coffee').default
+
+
 Dispatch = new EE()
 
 
 exports.default = ->
 
-    require('./globals.coffee').default
 
     reducer = require('./reducer.coffee').default
     side_effects = require('./side_effects').default { Dispatch }
