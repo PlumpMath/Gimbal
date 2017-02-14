@@ -8,16 +8,17 @@ window.Imm = require 'immutable'
 
 window._ = require 'lodash'
 window._fp = require 'lodash/fp'
+window.gl_mat = require 'gl-matrix'
 
 window.async = require 'async'
 
-window.mat3 = gal_mat.mat3
+window.mat3 = gl_mat.mat3
 window.vec3 = gl_mat.vec3
 window.vec2 = gl_mat.vec2
 
 window.cos = Math.cos.bind Math
 window.sin = Math.sin.bind Math
-window.pi = Math.PI.bind Math
+window.pi = Math.PI
 
 
 window.EE = require "wolfy87-eventemitter"

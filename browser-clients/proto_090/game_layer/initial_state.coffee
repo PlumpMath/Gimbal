@@ -7,9 +7,9 @@ exports.default = ->
         # spacewar_primus: spacewar_primus
 
         desires:
-            shortid():
+            "#{shortid()}":
                 type: 'primus:init_all_the_primus'
-            shortid():
+            "#{shortid()}":
                 type: 'init:keyboard_handler'
 
 

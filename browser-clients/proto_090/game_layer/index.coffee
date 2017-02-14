@@ -11,7 +11,7 @@ exports.default = ->
 
 
     reducer = require('./reducer.coffee').default
-    side_effects = require('./side_effects').default { Dispatch }
+    side_effects = require('./side_effects.coffee').default { Dispatch }
 
     state = require('./initial_state.coffee').default { spacewar_primus }
 
