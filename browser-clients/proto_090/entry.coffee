@@ -1,4 +1,8 @@
 
 
+require './top_level_globals.coffee'
 
-require './game_layer/index.coffee'
+c 'into entry'
+
+
+require('./game_layer/index.coffee').default()

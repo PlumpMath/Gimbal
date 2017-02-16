@@ -8,6 +8,8 @@ exports.default = ->
 
         desires:
             "#{shortid()}":
+                type: 'setup:workers'
+            "#{shortid()}":
                 type: 'primus:init_all_the_primus'
             "#{shortid()}":
                 type: 'init:keyboard_handler'

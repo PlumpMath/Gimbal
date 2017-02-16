@@ -8,6 +8,17 @@ window.Imm = require 'immutable'
 
 window._ = require 'lodash'
 window._fp = require 'lodash/fp'
+
+{
+    keys: global.keys
+    assign: global.assign
+    includes: global.includes
+} = _
+
+global.shortid = require 'shortid'
+
+global.work = require 'webworkify-webpack'
+
 window.gl_mat = require 'gl-matrix'
 
 window.async = require 'async'

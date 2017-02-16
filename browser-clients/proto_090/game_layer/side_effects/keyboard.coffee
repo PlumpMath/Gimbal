@@ -5,8 +5,8 @@
 arq = {}
 
 
-arq['init:keyboard'] = ({ dispatch, state }) ->
-
+arq['init:keyboard_handler'] = ({ dispatch, state }) ->
+    c 'init keyboard...'
     document.addEventListener 'keydown', (e) ->
         switch e.keyCode
             when 88, 81
