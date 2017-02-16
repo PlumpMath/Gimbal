@@ -11,7 +11,7 @@ Dispatch = new EE()
 
 exports.default = ->
 
-    reducer = require('./reducer.coffee').default
+    reducer = require('./reducer.coffee').default { Dispatch }
     side_effects = require('./side_effects.coffee').default { Dispatch }
 
     state = require('./initial_state.coffee').default { primus }

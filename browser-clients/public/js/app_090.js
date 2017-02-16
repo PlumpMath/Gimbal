@@ -25060,7 +25060,9 @@ Dispatch = new EE();
 
 exports["default"] = function() {
   var reducer, side_effects, state;
-  reducer = __webpack_require__(18)["default"];
+  reducer = __webpack_require__(18)["default"]({
+    Dispatch: Dispatch
+  });
   side_effects = __webpack_require__(20)["default"]({
     Dispatch: Dispatch
   });
@@ -25393,6 +25395,9 @@ window.primus = new Primus('http://localhost:3883', {});
 exports["default"] = function() {
   var js_state, obj, state;
   js_state = {
+    sagas: Imm.Map({
+      test_000: 'blahblah'
+    }),
     desires: (
       obj = {},
       obj["" + (shortid())] = {
@@ -25428,7 +25433,7 @@ exports["default"] = function() {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arq, keys_arq, reducer;
+var arq, keys_arq;
 
 arq = {};
 
@@ -25436,22 +25441,45 @@ arq = assign(arq, __webpack_require__(19)["default"]);
 
 keys_arq = keys(arq);
 
-reducer = function(arg) {
-  var action, state;
-  state = arg.state, action = arg.action;
-  state = state.setIn(['desires'], Imm.Map({}));
-  if (includes(keys_arq, action.type)) {
-    return arq[action.type]({
-      state: state,
-      action: action
+exports["default"] = function(arg) {
+  var Dispatch, dispatch, reducer, saga_channel;
+  Dispatch = arg.Dispatch;
+  dispatch = function(opts) {
+    return Dispatch.emit('new_action', {
+      action: opts
     });
-  } else {
-    c('noop in reducer with', action.type);
-    return state;
-  }
+  };
+  saga_channel = function(arg1) {
+    var action, state;
+    state = arg1.state, action = arg1.action;
+    if (includes(keys_arq, action.type)) {
+      state = arq[action.type]({
+        state: state,
+        action: action
+      });
+      return state;
+    } else {
+      c('noop in saga channel', action.type);
+      return state;
+    }
+  };
+  return reducer = function(arg1) {
+    var action, state;
+    state = arg1.state, action = arg1.action;
+    state = state.setIn(['desires'], Imm.Map({}));
+    if (includes(keys_arq, action.type)) {
+      state = arq[action.type]({
+        state: state,
+        action: action,
+        saga_channel: saga_channel
+      });
+      return state;
+    } else {
+      c('noop in reducer with', action.type);
+      return state;
+    }
+  };
 };
-
-exports["default"] = reducer;
 
 
 /***/ }),
@@ -25462,11 +25490,28 @@ var arq;
 
 arq = {};
 
-arq['completed:init:webgl'] = function(arg) {
-  var action, canvas, colorLocation, gl, ref, state;
+arq['saga_test_one'] = function(arg) {
+  var action, state;
   state = arg.state, action = arg.action;
-  c('into completed webgl', action.payload);
+  c('in saga_test_one', action);
+  return state;
+};
+
+arq['completed:init:webgl'] = function(arg) {
+  var action, canvas, colorLocation, gl, ref, saga, saga_channel, state;
+  state = arg.state, action = arg.action, saga_channel = arg.saga_channel;
   ref = action.payload, gl = ref.gl, canvas = ref.canvas, colorLocation = ref.colorLocation;
+  state = state.set('canvas', canvas);
+  state = state.set('gl', gl);
+  state = state.set('colorLocation', colorLocation);
+  saga = {
+    type: 'saga_test_one',
+    payload: 'null'
+  };
+  state = saga_channel({
+    state: state,
+    action: saga
+  });
   return state;
 };
 
