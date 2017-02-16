@@ -41,10 +41,9 @@ opts_primus =
 
 spacewar_primus = new Primus(server_090, opts_primus)
 
+primus_path = path.resolve(path.join(public_dir, '/js', '/primus.js'))
 
-this_here = path.resolve(path.join(public_dir, '/js', '/primus.js'))
-
-spacewar_primus.save this_here
+spacewar_primus.save primus_path
 
 # app.listen port, ->
 #     c 'server listening on ', port
