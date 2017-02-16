@@ -2,6 +2,7 @@
 
 
 
+
 get_shader = (gl, source, type, typeString) ->
     shader = gl.createShader type
     gl.shaderSource shader, source
@@ -15,10 +16,12 @@ get_shader = (gl, source, type, typeString) ->
 arq = {}
 
 arq['init:init_webgl'] = ({ state, dispatch, desire }) ->
+    c 'going here3838838383838'
     document.getElementsByTagName('body')[0].style.overflow = 'hidden'
 
     vertex_shader_source = require('../shaders/vertex_shader_001.glsl')
     fragment_shader_source = require('../shaders/fragment_shader_000.glsl')
+
 
     canvas = document.getElementById('canvas_000')
 
@@ -37,7 +40,7 @@ arq['init:init_webgl'] = ({ state, dispatch, desire }) ->
     gl.linkProgram program
     gl.useProgram program
 
-    colorLocation = gl.getUniformLocation, "u_color"
+    colorLocation = gl.getUniformLocation program, "u_color"
     resolutionLocation = gl.getUniformLocation(program, "u_resolution")
     gl.uniform2f(resolutionLocation, canvas.width, canvas.height)
 
@@ -47,6 +50,7 @@ arq['init:init_webgl'] = ({ state, dispatch, desire }) ->
     positionLocation = gl.getAttribLocation program, "a_position"
     gl.enableVertexAttribArray positionLocation
     gl.vertexAttribPointer positionLocation, 2, gl.FLOAT, false, 0, 0
+
 
     dispatch
         type: 'completed:init:webgl'

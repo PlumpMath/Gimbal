@@ -6,14 +6,14 @@ arq = {}
 
 # arq = assign arq, require('./reducer/lounge_ufo.coffee')
 
-
+arq = assign arq, require('./reducers/setup_feedback.coffee').default
 
 keys_arq = keys arq
 
 reducer = ({ state, action }) ->
     state = state.setIn ['desires'], Imm.Map({})
     if includes(keys_arq, action.type)
-        arq[action.type] { cs, state, action }
+        arq[action.type] { state, action }
     else
         c 'noop in reducer with', action.type
         state

@@ -12,6 +12,8 @@ gl_graphics_pipeline_effect = ({ gl_render_payload }) ->
 arq = {}
 
 
+arq = assign arq, require('./side_effects/gl_setup.coffee').default
+
 arq = assign arq, require('./side_effects/keyboard.coffee').default
 
 
@@ -19,11 +21,10 @@ arq = assign arq, require('./side_effects/init_all_the_primus.coffee').default
 
 arq = assign arq, require('./side_effects/workers.coffee').default
 
-# arq = assign arq, require('./side_effects/system_primus.coffee').default
-#
-# arq = assign arq, require('./side_effects/lounger.coffee').default
 
 keys_arq = keys arq
+
+# c 'keys_arq', keys_arq
 
 side_effects_f = ({ Dispatch }) ->
 
@@ -31,7 +32,6 @@ side_effects_f = ({ Dispatch }) ->
         Dispatch.emit 'new_action', { action: opts }
 
     ({ state }) ->
-        c 'goin in with '
         for key_id, desire of state.get('desires').toJS()
             if includes(keys_arq, desire.type) is true
                 arq[desire.type] { state, dispatch, desire }

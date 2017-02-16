@@ -14,8 +14,9 @@ module.exports =
             {
                 exclude: /node_modules/
                 test: /\.glsl$/
-                loader: 'webpack-glsl'
+                loader: 'webpack-glsl-loader'
             },
+            {
                 exclude: /node_modules/
                 test: /\.coffee$/
                 loader: "coffee-loader"
