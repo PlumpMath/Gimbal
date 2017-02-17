@@ -3,6 +3,7 @@
 
 ### things to do:
 
+- after doing multi-threading should enable a general interface protocol for linux socket communication with other processes on the same linux system, for the server process of course, and simultaneously for other services ('micro' or not) out over websockets.  this way the node.js codebase doesn't become an obstacle to problems to solve on the server side that are best solved in other languages. (planned)
 
 - implement audio.  never done this in the browser, would be a good time to start. (planned)
 
