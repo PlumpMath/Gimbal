@@ -5,11 +5,28 @@
 arq = {}
 
 
+
+
+
+
+
+
+
+
 arq['saga_test_one'] = ({ state, action }) ->
 
     c 'in saga_test_one', action
 
     state
+
+
+
+
+
+
+
+
+
 
 arq['completed:init:webgl'] = ({ state, action, saga_channel }) ->
     # c 'into completed webgl', action.payload
@@ -26,6 +43,18 @@ arq['completed:init:webgl'] = ({ state, action, saga_channel }) ->
     state = saga_channel { state, action: saga }
 
     state
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

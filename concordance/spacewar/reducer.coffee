@@ -8,7 +8,7 @@ arq = assign arq, require('./reducer/lounge_ufo.coffee')
 keys_arq = keys arq
 
 
-reducer_f = ({ }) ->
+reducer_f = ->
 
     saga_channel = ({ cs, state, action, saga_channel }) ->
         if includes(keys_arq, action.type)

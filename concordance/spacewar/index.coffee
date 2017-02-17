@@ -17,16 +17,12 @@ module.exports = ({ cs, env, redis, spacewar_primus }) ->
 
     require './modules/globals.coffee'
 
-
-
     state = require('./modules/initial_state.coffee').default
         env: env
-        helsinki_primus: helsinki_primus
+        spacewar_primus: spacewar_primus
         redis: redis
 
-
-
-    reducer = require('./reducer.coffee').default
+    reducer = require('./reducer.coffee').default()
 
     side_effects = require('./side_effects.coffee').default { Dispatch, cs, env }
 

@@ -1,16 +1,20 @@
 
 
 
+# _spacewar_
+_Web-browser gaming, networking applications., WebGL, WebRTC, WebSockets, ReactJS, NodeJS, ._
+#### history:
+
+I wanted to learn WebGL and create a 2d game first, before building a lightweight 3d engine roll from scratch (possibly then moving to an open source project) to learn.  The focus here isn't on the game itself; the platform is intended to have general applicability over the problem space. Excellence in networking, sensor aggregation, AI, and informatically-rich UIs are common requirements.
 
 
 
 
 
+__________________________________________________________----
 
-
-
-
-### spacewar the classic DOS era game with 2D world and spaceships flying around, sometimes with a planetary gravity well.
+# old readme:
+######  spacewar the classic DOS era game with 2D world and spaceships flying around, sometimes with a planetary gravity well.
 
 Here we will use React to setup the menu UIs, restart game, hi scores, stuff like that, and we'll use webGL for the game screen.
 

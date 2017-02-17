@@ -22,7 +22,6 @@ dev_server = ({ env, cs, redis }) ->
         keys, assign, map, reduce
     } = _
 
-    # common_public_dir = path.resolve('..', 'react-browser-client', 'public')
 
     public_dir = path.resolve path.join('..', '/browser-clients', '/public')
 
