@@ -16,9 +16,11 @@
 - setup cors such that can (potentially barring restrictions) have the main app static assets (express server) served by one app dyno, and the websockets mgmt served by another.  this mostly for proof of concept. (planned)
 
 - create a worker-like development structure for multi-threading operations on the concordance side.
-    
+
 - figure out what goes into web-workers and what should stay on main thread (ongoing)
 
 - implement network gaming with websockets/ primus (ongoing)
 
 - move express routing and cookies / sessions mgmt to concordance side-effects or some module. (deferred)
+
+- change the repo name ; new auspice aegis etcetera ; general project focus grows ::::====>>>> Nodejs websocket server, express dev server, flux immutable architecture concordance, Rust microservices connecting by Linux sockets as well as by websockets, more advanced Redis 4.0 usage, more developed brujo(admin monitoring/analytics ui app interface)
