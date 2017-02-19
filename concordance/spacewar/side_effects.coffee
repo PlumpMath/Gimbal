@@ -5,7 +5,7 @@ arq = {}
 
 arq = assign arq, require('./side_effects/system_primus.coffee').default
 
-arq = assign arq, require('./side_effects/lounger.coffee').default
+# arq = assign arq, require('./side_effects/lounger.coffee').default
 
 keys_arq = keys arq
 

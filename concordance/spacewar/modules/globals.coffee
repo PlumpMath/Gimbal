@@ -11,6 +11,7 @@ global.assign = _.assign
 global.keys = _.keys
 global.map = _.map
 global.reduce = _.reduce
+global.includes = _.includes
 
 global.shortid = require 'shortid'
 

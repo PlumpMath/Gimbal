@@ -20,7 +20,7 @@ exports.default = ({
         log_cache: log_cache
         desires: desires
         ufo_sessions: Imm.Map({})
-        lounger_sessions: Imm.Map({})
+        spacewar_sessions: Imm.Map({})
 
         spacewar_primus: spacewar_primus
 

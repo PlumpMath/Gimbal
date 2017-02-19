@@ -1,0 +1,6 @@
+
+
+arq = {}
+
+
+exports.default = arq
