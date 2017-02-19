@@ -1,6 +1,15 @@
 
 
 
+require './globals.coffee'
+
+
+process.on 'uncaughtException', (err)->
+    c color.blue('exiting', on)
+    c err
+    process.exit(0)
+
+
 
 dev_server = ({ env, cs, redis }) ->
 
@@ -67,7 +76,7 @@ dev_server = ({ env, cs, redis }) ->
         secret: spacewar_arq.cookie_parser_secret
 
     app_spacewar.use spacewar_arq.cookies
-    app_spacewar_lounge.use express_session(spacewar_store_arq)
+    app_spacewar.use express_session(spacewar_store_arq)
     app_spacewar.use '/js', express.static(path.join(public_dir, '/js'))
     app_spacewar.use '/css', express.static(path.join(public_dir, '/css'))
     app_spacewar.use '/images', express.static(path.join(public_dir, '/images'))

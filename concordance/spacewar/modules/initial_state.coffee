@@ -7,7 +7,7 @@ log_cache = Imm.List []
 
 desires = Imm.Map {}
 
-module.exports = ({
+exports.default = ({
     env,
     spacewar_primus,
     redis
@@ -22,7 +22,7 @@ module.exports = ({
         ufo_sessions: Imm.Map({})
         lounger_sessions: Imm.Map({})
 
-        helsinki_primus: helsinki_primus
+        spacewar_primus: spacewar_primus
 
         chat_log: Imm.List([])
 

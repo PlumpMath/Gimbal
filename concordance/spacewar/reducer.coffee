@@ -3,7 +3,7 @@
 
 arq = {}
 
-arq = assign arq, require('./reducer/lounge_ufo.coffee')
+# arq = assign arq, require('./reducer/lounge_ufo.coffee')
 
 keys_arq = keys arq
 

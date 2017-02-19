@@ -1,6 +1,16 @@
-c = console.log.bind console
+
+require './globals.coffee'
+
 Redis = require 'ioredis'
 redis = new Redis({ db: 3, dropBufferSupport: true })
+
+
+process.on 'uncaughtException', (err)->
+    c color.blue('exiting', on)
+    c err
+    process.exit(0)
+
+
 
 logging_func_f = ({ env, dev_server }) ->
 
@@ -15,7 +25,10 @@ logging_func_f = ({ env, dev_server }) ->
 get_state_cache = ({ logging_func_f, dev_server }) ->
     redis.hgetall 'env', (err, env) ->
         if err then c err else
-            env = JSON.parse env
+            c 'env', env
+            # if not(env)
+            #     env = "snatoehusnatoehusanteouhaeunsth"
+            # env = JSON.parse env
             logging_func_f { env, dev_server }
 
 module.exports = ({ dev_server }) ->
