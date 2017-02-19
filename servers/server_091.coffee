@@ -1,33 +1,8 @@
 
 
 
-# require './globals.coffee'
-
-
-
-
-
 
 dev_server = ({ env, cs, redis }) ->
-
-    shortid = require 'shortid'
-    c = console.log.bind console
-    uuid = require 'node-uuid'
-    v4 = uuid.v4.bind uuid
-    color = require 'bash-color'
-    body_parser = require 'body-parser'
-    cookie_parser = require 'cookie-parser'
-    express = require 'express'
-    _ = require 'lodash'
-    fs = require 'fs'
-    path = require 'path'
-    http = require 'http'
-    Primus = require 'primus'
-
-    {
-        keys, assign, map, reduce
-    } = _
-
 
     public_dir = path.resolve path.join('..', '/browser-clients', '/public')
 
@@ -40,11 +15,12 @@ dev_server = ({ env, cs, redis }) ->
         index_path: '/dev_index_090.html'
         primus_dir: path.resolve(path.join(public_dir, '/js'))
 
-    # brujo_terminal_arq = do ->
-    #     cookie_parser_secret = "49894839avvmbk;"
-    #     cookies: cookies
-    #     index_path: '/html/brujo_terminal.html'
-    #     primus_dir: path.resolve('..', 'react-browser-client', 'public', 'js')
+    brujo_terminal_arq = do ->
+        cookie_parser_secret = "49894839avvmbk;"
+
+        cookies: cookie_parser(cookie_parser_secret)
+        index_path: '/html/brujo_terminal.html'
+        primus_dir: path.resolve('..', 'react-browser-client', 'public', 'js')
 
     primus_session_f = require './modules/primus_session.coffee'
 
@@ -109,7 +85,7 @@ dev_server = ({ env, cs, redis }) ->
         spacewar_primus: spacewar_primus
         redis: redis
 
-    app_helsinki_lounge_server.listen app_helsinki_lounge_port, ->
+    app_spacewar_server.listen app_spacewar_port, ->
         c color.blue("Server listening on port" , on), color.cyan(app_helsinki_lounge_port, on)
 
 require('../concordance/spacewar/modules/startup_transce.coffee') { dev_server }

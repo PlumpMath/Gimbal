@@ -10,7 +10,7 @@ class Emitter extends EventEmitter
 Dispatch = new Emitter()
 
 process.setMaxListeners 10000
-c 'helloaoeua'
+# c 'helloaoeua'
 
 module.exports = ({ cs, env, redis, spacewar_primus }) ->
 
