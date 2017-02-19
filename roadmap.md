@@ -7,7 +7,7 @@
 
 - after doing multi-threading should enable a general interface protocol for linux socket communication with other processes on the same linux system, for the server process of course, and simultaneously for other services ('micro' or not) out over websockets.  this way the node.js codebase doesn't become an obstacle to problems to solve on the server side that are best solved in other languages. (planned)
 
-- implement audio.  never done this in the browser, would be a good time to start. (planned)
+- implement audio.  webrtc asap,  (planned asap as soon as get spacewar refactor sort of happening in client)
 
 - implement webrtc bare-bones in the browser-clients (planned).  this is for audio (see above) as well as advanced networking
 
@@ -21,6 +21,6 @@
 
 - implement network gaming with websockets/ primus (ongoing)
 
-- move express routing and cookies / sessions mgmt to concordance side-effects or some module. (deferred)
+- ~~move express routing and cookies / sessions mgmt to concordance side-effects or some module.~~ no because remember the static asset server is supposed to be pretty dumb.  even if webpack asset strategy, will think in terms dumb endpoints.  so no.  keep it in the dev server(deferred)
 
-- change the repo name ; new auspice aegis etcetera ; general project focus grows ::::====>>>> Nodejs websocket server, express dev server, flux immutable architecture concordance, Rust microservices connecting by Linux sockets as well as by websockets, more advanced Redis 4.0 usage, more developed brujo(admin monitoring/analytics ui app interface)
+- change the repo name ; new auspice aegis etcetera ; general project focus grows ::::====>>>> Nodejs websocket server, express dev server, flux immutable architecture concordance, Rust microservices connecting by Linux sockets as well as by websockets, more advanced Redis 4.0 usage, more developed brujo(admin monitoring/analytics ui app interface   )
