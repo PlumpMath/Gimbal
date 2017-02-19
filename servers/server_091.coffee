@@ -1,13 +1,10 @@
 
 
 
-require './globals.coffee'
+# require './globals.coffee'
 
 
-process.on 'uncaughtException', (err)->
-    c color.blue('exiting', on)
-    c err
-    process.exit(0)
+
 
 
 
