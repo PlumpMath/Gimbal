@@ -35,6 +35,10 @@ As a lifelong aerospace maven, I want eventually to do a flight-sim, although ty
 
 So that's kind of the idea with this project now.  It was a simple game project for getting started with WebGL and games.  Now using this as an R&D platform , experimental stack and assorted prototypes.  Lab.
 
+The browser-client initially is a refactor of the spacewar 2d thing, with the other missing features (gravity well planet, lasers, scoring, rounds, ) and network play.  
+Eventually will move to 3d and other games.  The 'games' need not be games in the traditional sense, and could be e.g. simulations of naturalistic/real-world phenomena/processes.
+And the clients need not be user-oriented applications, they could be AI bots themselves.  The possibilities in terms of configuration is related to the extent of generality of the toolset and associated patterns.
+
 
 
 
