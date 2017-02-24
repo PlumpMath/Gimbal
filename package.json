@@ -1,6 +1,6 @@
 {
-    "name": "dos-era-spacewar-redux",
-    "author": "wylie j kulik",
+    "name": "",
+    "author": "Wylie J Kulik",
     "version": "0.2.0",
     "dependencies": {
         "async": "latest",

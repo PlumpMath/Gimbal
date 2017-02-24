@@ -16,7 +16,6 @@ get_shader = (gl, source, type, typeString) ->
 arq = {}
 
 arq['init:init_webgl'] = ({ state, dispatch, desire }) ->
-    c 'going here3838838383838'
     document.getElementsByTagName('body')[0].style.overflow = 'hidden'
 
     vertex_shader_source = require('../shaders/vertex_shader_001.glsl')

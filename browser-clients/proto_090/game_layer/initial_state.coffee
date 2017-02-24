@@ -1,10 +1,9 @@
-# exports.default = ({ spacewar_primus }) ->
 
-exports.default = ->
+exports.default = ({ primus })->
 
     js_state =
 
-        spacewar_primus: spacewar_primus
+        spacewar_primus: primus
 
         # sagas: Imm.Map
         #     test_000: 'blahblah'

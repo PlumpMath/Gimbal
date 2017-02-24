@@ -29,7 +29,7 @@ arq['saga_test_one'] = ({ state, action }) ->
 
 
 arq['completed:init:webgl'] = ({ state, action, saga_channel }) ->
-    # c 'into completed webgl', action.payload
+    c 'into completed webgl', action.payload
     { gl, canvas, colorLocation } = action.payload
 
     state = state.set 'canvas', canvas
@@ -41,6 +41,9 @@ arq['completed:init:webgl'] = ({ state, action, saga_channel }) ->
         payload: 'null'
 
     state = saga_channel { state, action: saga }
+
+    state = state.setIn ['desires', shortid()],
+        type: 'gl_render'
 
     state
 

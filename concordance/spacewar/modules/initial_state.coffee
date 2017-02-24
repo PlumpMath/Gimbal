@@ -33,8 +33,5 @@ exports.default = ({
 
     state = Imm.fromJS state
 
-    # di = { type: 'primus:init_all_the_primus' }
-    #
-    # state = state.setIn ['desires', shortid()], di
 
     state

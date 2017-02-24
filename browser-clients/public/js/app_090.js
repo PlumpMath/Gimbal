@@ -25392,10 +25392,11 @@ window.primus = new Primus('http://localhost:3883', {});
 /* 17 */
 /***/ (function(module, exports) {
 
-exports["default"] = function() {
-  var js_state, obj, state;
+exports["default"] = function(arg) {
+  var js_state, obj, primus, state;
+  primus = arg.primus;
   js_state = {
-    spacewar_primus: spacewar_primus,
+    spacewar_primus: primus,
     desires: (
       obj = {},
       obj["" + (shortid())] = {
@@ -25498,6 +25499,7 @@ arq['saga_test_one'] = function(arg) {
 arq['completed:init:webgl'] = function(arg) {
   var action, canvas, colorLocation, gl, ref, saga, saga_channel, state;
   state = arg.state, action = arg.action, saga_channel = arg.saga_channel;
+  c('into completed webgl', action.payload);
   ref = action.payload, gl = ref.gl, canvas = ref.canvas, colorLocation = ref.colorLocation;
   state = state.set('canvas', canvas);
   state = state.set('gl', gl);
@@ -25509,6 +25511,9 @@ arq['completed:init:webgl'] = function(arg) {
   state = saga_channel({
     state: state,
     action: saga
+  });
+  state = state.setIn(['desires', shortid()], {
+    type: 'gl_render'
   });
   return state;
 };
@@ -25533,6 +25538,8 @@ arq = {};
 arq = assign(arq, __webpack_require__(52)["default"]);
 
 arq = assign(arq, __webpack_require__(51)["default"]);
+
+arq = assign(arq, __webpack_require__(53)["default"]);
 
 arq = assign(arq, __webpack_require__(24)["default"]);
 
@@ -36962,7 +36969,6 @@ arq = {};
 arq['init:init_webgl'] = function(arg) {
   var buffer, canvas, colorLocation, desire, dispatch, fragment_shader, fragment_shader_source, gl, positionLocation, program, resolutionLocation, state, vertex_shader, vertex_shader_source;
   state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
-  c('going here3838838383838');
   document.getElementsByTagName('body')[0].style.overflow = 'hidden';
   vertex_shader_source = __webpack_require__(47);
   fragment_shader_source = __webpack_require__(46);
@@ -36993,6 +36999,60 @@ arq['init:init_webgl'] = function(arg) {
       colorLocation: colorLocation
     }
   });
+};
+
+exports["default"] = arq;
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+var arq, gl_tri, vend;
+
+vend = function(arg) {
+  var a, b, cardinal, g, r, rayy, uni_color;
+  rayy = arg.rayy, uni_color = arg.uni_color;
+  r = unicolor[0], g = unicolor[1], b = unicolor[2], a = unicolor[3];
+  cardinal = Math.floor(rayy.length / 2);
+  gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
+  gl.uniform4f(colorLocation(r, g, b, a));
+  return gl.drawArrays(gl.TRIANGLES, 0, cardinal);
+};
+
+gl_tri = {};
+
+arq = {};
+
+arq['gl_render'] = function(arg) {
+  var desire, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, i, idx, len, payload, ship_1_payload, star_rayy_2, state;
+  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
+  payload = desire.payload;
+  ship_1_payload = payload.ship_1_payload;
+  draw_space = " draw a black background ";
+  vend({
+    rayy: bk_rayy_3,
+    uni_color: [0, 0, 0, 1]
+  });
+  draw_stars = " draw a bunch of stars";
+  fn = (function(_this) {
+    return function(star_rayy_2, idx) {
+      return vend({
+        rayy: star_rayy_2,
+        uni_color: [1, Math.random(), 1, 1]
+      });
+    };
+  })(this);
+  for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
+    star_rayy_2 = galaxy_rayy[idx];
+    fn(star_rayy_2, idx);
+  }
+  draw_ship_1 = " draw the first ship";
+  gl.bufferData(gl.ARRAY_BUFFER, ship_1_payload, gl.STATIC_DRAW);
+  gl.uniform4f(colorLocation, 0, .9, .7, 1);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  draw_ship_2 = 'draw the second ship';
+  return gl.bufferData(gl.ARRAY_BUFFER, ship_2_payload, gl.STATIC_);
 };
 
 exports["default"] = arq;
