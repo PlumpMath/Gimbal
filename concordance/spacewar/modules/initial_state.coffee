@@ -23,7 +23,7 @@ exports.default = ({
             "#{shortid()}":
                 type: 'primus:init_all_the_primus'
         ufo_sessions: Imm.Map({})
-        lounger_sessions: Imm.Map({})
+        spacewar_sessions: Imm.Map({})
 
         spacewar_primus: spacewar_primus
 

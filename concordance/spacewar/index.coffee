@@ -3,15 +3,14 @@
 
 
 
-# process.on 'uncaughtException', (err)->
-#     c err
-#     process.exit(0)
+
 
 EventEmitter = require 'events'
 class Emitter extends EventEmitter
 Dispatch = new Emitter()
 
 process.setMaxListeners 10000
+# c 'helloaoeua'
 
 module.exports = ({ cs, env, redis, spacewar_primus }) ->
 

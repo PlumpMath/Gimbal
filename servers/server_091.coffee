@@ -4,25 +4,6 @@
 
 dev_server = ({ env, cs, redis }) ->
 
-    shortid = require 'shortid'
-    c = console.log.bind console
-    uuid = require 'node-uuid'
-    v4 = uuid.v4.bind uuid
-    color = require 'bash-color'
-    body_parser = require 'body-parser'
-    cookie_parser = require 'cookie-parser'
-    express = require 'express'
-    _ = require 'lodash'
-    fs = require 'fs'
-    path = require 'path'
-    http = require 'http'
-    Primus = require 'primus'
-
-    {
-        keys, assign, map, reduce
-    } = _
-
-
     public_dir = path.resolve path.join('..', '/browser-clients', '/public')
 
     spacewar_arq = do ->
@@ -34,11 +15,12 @@ dev_server = ({ env, cs, redis }) ->
         index_path: '/dev_index_090.html'
         primus_dir: path.resolve(path.join(public_dir, '/js'))
 
-    # brujo_terminal_arq = do ->
-    #     cookie_parser_secret = "49894839avvmbk;"
-    #     cookies: cookies
-    #     index_path: '/html/brujo_terminal.html'
-    #     primus_dir: path.resolve('..', 'react-browser-client', 'public', 'js')
+    brujo_terminal_arq = do ->
+        cookie_parser_secret = "49894839avvmbk;"
+
+        cookies: cookie_parser(cookie_parser_secret)
+        index_path: '/html/brujo_terminal.html'
+        primus_dir: path.resolve('..', 'react-browser-client', 'public', 'js')
 
     primus_session_f = require './modules/primus_session.coffee'
 
@@ -50,6 +32,9 @@ dev_server = ({ env, cs, redis }) ->
 
     app_spacewar = express()
 
+    app_brujo = express()
+
+
     express_session = require 'express-session'
     connect_redis = require 'connect-redis'
     Redis_Store = connect_redis express_session
@@ -57,14 +42,20 @@ dev_server = ({ env, cs, redis }) ->
     spacewar_redis_store_opts = {}
     spacewar_redis_store = new Redis_Store(spacewar_redis_store_opts)
 
-    # brujo_redis_store_opts = {}
-    # brujo__redis__store = new Redis__Store(brujo_redis_store_opts)
+    brujo_redis_store_opts = {}
+    brujo_redis_store = new Redis_Store(brujo_redis_store_opts)
 
     spacewar_store_arq =
         resave: true
         saveUninitialized: true
         store: spacewar_redis_store
         secret: spacewar_arq.cookie_parser_secret
+
+    brujo_store_arq =
+        resave: true
+        saveUninitialized: true
+        store: brujo_redis_store
+        secret: brujo_terminal_arq.cookie_parser_secret
 
     app_spacewar.use spacewar_arq.cookies
     app_spacewar.use express_session(spacewar_store_arq)
@@ -73,13 +64,29 @@ dev_server = ({ env, cs, redis }) ->
     app_spacewar.use '/images', express.static(path.join(public_dir, '/images'))
     app_spacewar.use '/fonts', express.static(path.join(public_dir, '/fonts'))
     app_spacewar.use '/svgs', express.static(path.join(public_dir, '/svgs'))
+    app_spacewar.use express.static(public_dir)
+
+    app_brujo.use brujo_terminal_arq.cookies
+    app_brujo.use express_session(brujo_store_arq)
+    app_brujo.use '/js', express.static(path.join(public_dir, '/js'))
+    app_brujo.use '/css', express.static(path.join(public_dir, '/css'))
+    app_brujo.use '/images', express.static(path.join(public_dir, '/images'))
+    app_brujo.use '/fonts', express.static(path.join(public_dir, '/fonts'))
+    app_brujo.use '/svgs', express.static(path.join(public_dir, '/svgs'))
+    app_brujo.use express.static(public_dir)
+
+
 
     app_spacewar.all '/*', (req, res, next) ->
         if not(includes(keys(req.cookies), 'caracal'))
             res.cookie 'caracal', "eureka::#{v4()}"
         res.sendFile path.join(public_dir, spacewar_arq.index_path)
 
-    app_spacewar.use express.static(public_dir)
+
+    app_brujo.all '/*', (req, res, next) ->
+        if not(includes(keys(req.cookies), 'brujo_session_express_lever'))
+            res.cookie 'brujo_terminal', "brujo::#{v4()}"
+
 
     app_spacewar_port = 3883
     app_brujo_port = 2239
