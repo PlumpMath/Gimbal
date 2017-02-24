@@ -25,15 +25,9 @@ logging_func_f = ({ env, dev_server }) ->
 get_state_cache = ({ logging_func_f, dev_server }) ->
     redis.hgetall 'env', (err, env) ->
         if err then c err else
-<<<<<<< HEAD
             if env is null then env = JSON.stringify({})
             c 'env', env
-=======
-            c 'env', env
-            # if not(env)
-            #     env = "snatoehusnatoehusanteouhaeunsth"
->>>>>>> 2e281670acb19c723eb0ab009208461000516a5a
-            # env = JSON.parse env
+
             logging_func_f { env, dev_server }
 
 module.exports = ({ dev_server }) ->

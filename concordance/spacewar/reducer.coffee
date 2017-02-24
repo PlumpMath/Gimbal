@@ -3,11 +3,8 @@
 
 arq = {}
 
-<<<<<<< HEAD
 arq = assign arq, require('./reducers/primus_base.coffee').default
-=======
-arq = assign arq, require('./reducers/infrastructure.coffee').default
->>>>>>> 2e281670acb19c723eb0ab009208461000516a5a
+
 
 keys_arq = keys arq
 

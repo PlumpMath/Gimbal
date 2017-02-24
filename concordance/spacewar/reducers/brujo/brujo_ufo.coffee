@@ -1,6 +1,0 @@
-
-
-arq = {}
-
-
-exports.default = arq

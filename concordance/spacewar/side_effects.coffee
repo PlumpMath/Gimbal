@@ -5,12 +5,10 @@ arq = {}
 
 arq = assign arq, require('./side_effects/primus_init.coffee').default
 
-<<<<<<< HEAD
+
 arq = assign arq, require('./side_effects/microservices_init.coffee').default
 
-=======
->>>>>>> 2e281670acb19c723eb0ab009208461000516a5a
-# arq = assign arq, require('./side_effects/lounger.coffee').default
+
 
 keys_arq = keys arq
 

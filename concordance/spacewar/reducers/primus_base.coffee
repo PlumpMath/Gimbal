@@ -20,12 +20,12 @@ arq['spacewar:spark:data'] = ({ cs, state, action }) ->
     { type, payload } = data
 
     if includes(keys_ufo_api, type)
-        state = ufo[type] { cs, state, action, data, token }
+        state = ufo_api[type] { cs, state, action, data, token }
     else if includes(keys_identified_player_api, type)
         user = state.getIn(['spacewar_sessions', token, 'user'])
         if user.toJS?
             if user.toJS().role is 'identified_player'
-                state = identified_player[type] { cs, state, action, data, token }
+                state = identified_player_api[type] { cs, state, action, data, token }
     else
         c 'noop in spark : data in reducer with action.type', action.type
     state

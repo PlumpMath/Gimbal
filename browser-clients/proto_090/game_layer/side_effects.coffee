@@ -17,7 +17,7 @@ arq = assign arq, require('./side_effects/init_webgl.coffee').default
 arq = assign arq, require('./side_effects/init.coffee').default
 
 
-# arq = assign arq, require('./side_effects/init_all_the_primus.coffee').default
+
 
 arq = assign arq, require('./side_effects/workers.coffee').default
 
