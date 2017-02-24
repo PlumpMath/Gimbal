@@ -1,11 +1,24 @@
-
-
-
-
 arq = {}
 
 
-arq['init:keyboard_handler'] = ({ dispatch, state }) ->
+
+
+
+
+
+
+
+arq['init_primus'] = ({ state, dispatch }) ->
+    primus.on 'data', (data) ->
+        dispatch
+            type: 'primus:data'
+            payload: { data }
+
+
+
+
+
+arq['init:keyboard_handler'] = ({ state, dispatch }) ->
     c 'init keyboard...'
     document.addEventListener 'keydown', (e) ->
         switch e.keyCode
@@ -33,6 +46,12 @@ arq['init:keyboard_handler'] = ({ dispatch, state }) ->
             when 38
                 dispatch
                     type: 'delta_thrust_ship_1'
+
+
+
+
+
+
 
 
 

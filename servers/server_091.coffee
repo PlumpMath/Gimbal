@@ -67,7 +67,7 @@ dev_server = ({ env, cs, redis }) ->
         secret: spacewar_arq.cookie_parser_secret
 
     app_spacewar.use spacewar_arq.cookies
-    app_spacewar_lounge.use express_session(spacewar_store_arq)
+    app_spacewar.use express_session(spacewar_store_arq)
     app_spacewar.use '/js', express.static(path.join(public_dir, '/js'))
     app_spacewar.use '/css', express.static(path.join(public_dir, '/css'))
     app_spacewar.use '/images', express.static(path.join(public_dir, '/images'))
@@ -103,7 +103,7 @@ dev_server = ({ env, cs, redis }) ->
         spacewar_primus: spacewar_primus
         redis: redis
 
-    app_helsinki_lounge_server.listen app_helsinki_lounge_port, ->
-        c color.blue("Server listening on port" , on), color.cyan(app_helsinki_lounge_port, on)
+    app_spacewar_server.listen app_spacewar_port, ->
+        c color.blue("Server listening on port" , on), color.cyan(app_spacewar_port, on)
 
 require('../concordance/spacewar/modules/startup_transce.coffee') { dev_server }

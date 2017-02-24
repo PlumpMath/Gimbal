@@ -25395,9 +25395,7 @@ window.primus = new Primus('http://localhost:3883', {});
 exports["default"] = function() {
   var js_state, obj, state;
   js_state = {
-    sagas: Imm.Map({
-      test_000: 'blahblah'
-    }),
+    spacewar_primus: spacewar_primus,
     desires: (
       obj = {},
       obj["" + (shortid())] = {
@@ -25532,11 +25530,9 @@ gl_graphics_pipeline_effect = function(arg) {
 
 arq = {};
 
-arq = assign(arq, __webpack_require__(21)["default"]);
+arq = assign(arq, __webpack_require__(52)["default"]);
 
-arq = assign(arq, __webpack_require__(23)["default"]);
-
-arq = assign(arq, __webpack_require__(22)["default"]);
+arq = assign(arq, __webpack_require__(51)["default"]);
 
 arq = assign(arq, __webpack_require__(24)["default"]);
 
@@ -25575,139 +25571,9 @@ exports["default"] = side_effects_f;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arq, get_shader;
-
-get_shader = function(gl, source, type, typeString) {
-  var shader;
-  shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    c("error in" + typeString + " SHADER: " + gl.getShaderInfoLog(shader));
-    return false;
-  }
-  return shader;
-};
-
-arq = {};
-
-arq['init:init_webgl'] = function(arg) {
-  var buffer, canvas, colorLocation, desire, dispatch, fragment_shader, fragment_shader_source, gl, positionLocation, program, resolutionLocation, state, vertex_shader, vertex_shader_source;
-  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
-  c('going here3838838383838');
-  document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-  vertex_shader_source = __webpack_require__(47);
-  fragment_shader_source = __webpack_require__(46);
-  canvas = document.getElementById('canvas_000');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  gl = canvas.getContext('experimental-webgl');
-  fragment_shader = get_shader(gl, fragment_shader_source, gl.FRAGMENT_SHADER, 'FRAGMENT');
-  vertex_shader = get_shader(gl, vertex_shader_source, gl.VERTEX_SHADER, 'VERTEX');
-  program = gl.createProgram();
-  gl.attachShader(program, vertex_shader);
-  gl.attachShader(program, fragment_shader);
-  gl.linkProgram(program);
-  gl.useProgram(program);
-  colorLocation = gl.getUniformLocation(program, "u_color");
-  resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-  buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  positionLocation = gl.getAttribLocation(program, "a_position");
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-  return dispatch({
-    type: 'completed:init:webgl',
-    payload: {
-      gl: gl,
-      canvas: canvas,
-      colorLocation: colorLocation
-    }
-  });
-};
-
-exports["default"] = arq;
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports) {
-
-var arq;
-
-arq = {};
-
-arq['primus:init_all_the_primus'] = function(arg) {
-  var dispatch, state;
-  dispatch = arg.dispatch, state = arg.state;
-  return c('doing something to initiate the primus facilities...todo');
-};
-
-exports["default"] = arq;
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-var arq;
-
-arq = {};
-
-arq['init:keyboard_handler'] = function(arg) {
-  var dispatch, state;
-  dispatch = arg.dispatch, state = arg.state;
-  c('init keyboard...');
-  return document.addEventListener('keydown', function(e) {
-    switch (e.keyCode) {
-      case 88:
-      case 81:
-        return dispatch({
-          type: 'rotate_ship_2_step_counterwise'
-        });
-      case 86:
-      case 75:
-        return dispatch({
-          type: 'rotate_ship_2_step_clockwise'
-        });
-      case 67:
-      case 74:
-        return dispatch({
-          type: 'delta_thrust_ship_2'
-        });
-      case 90:
-      case 191:
-        return dispatch({
-          type: 'ship_1_torpedo_fired'
-        });
-      case 32:
-        return dispatch({
-          type: 'ship_2_torpedo_fired'
-        });
-      case 37:
-        return dispatch({
-          type: 'rotate_ship_1_counterwise'
-        });
-      case 39:
-        return dispatch({
-          type: 'rotate_ship_2_clockwise'
-        });
-      case 38:
-        return dispatch({
-          type: 'delta_thrust_ship_1'
-        });
-    }
-  });
-};
-
-exports["default"] = arq;
-
-
-/***/ }),
+/* 21 */,
+/* 22 */,
+/* 23 */,
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -37001,6 +36867,135 @@ __webpack_require__(13);
 c('into entry');
 
 __webpack_require__(12)["default"]();
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+var arq;
+
+arq = {};
+
+arq['init_primus'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  return primus.on('data', function(data) {
+    return dispatch({
+      type: 'primus:data',
+      payload: {
+        data: data
+      }
+    });
+  });
+};
+
+arq['init:keyboard_handler'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  c('init keyboard...');
+  return document.addEventListener('keydown', function(e) {
+    switch (e.keyCode) {
+      case 88:
+      case 81:
+        return dispatch({
+          type: 'rotate_ship_2_step_counterwise'
+        });
+      case 86:
+      case 75:
+        return dispatch({
+          type: 'rotate_ship_2_step_clockwise'
+        });
+      case 67:
+      case 74:
+        return dispatch({
+          type: 'delta_thrust_ship_2'
+        });
+      case 90:
+      case 191:
+        return dispatch({
+          type: 'ship_1_torpedo_fired'
+        });
+      case 32:
+        return dispatch({
+          type: 'ship_2_torpedo_fired'
+        });
+      case 37:
+        return dispatch({
+          type: 'rotate_ship_1_counterwise'
+        });
+      case 39:
+        return dispatch({
+          type: 'rotate_ship_2_clockwise'
+        });
+      case 38:
+        return dispatch({
+          type: 'delta_thrust_ship_1'
+        });
+    }
+  });
+};
+
+exports["default"] = arq;
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arq, get_shader;
+
+get_shader = function(gl, source, type, typeString) {
+  var shader;
+  shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    c("error in" + typeString + " SHADER: " + gl.getShaderInfoLog(shader));
+    return false;
+  }
+  return shader;
+};
+
+arq = {};
+
+arq['init:init_webgl'] = function(arg) {
+  var buffer, canvas, colorLocation, desire, dispatch, fragment_shader, fragment_shader_source, gl, positionLocation, program, resolutionLocation, state, vertex_shader, vertex_shader_source;
+  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
+  c('going here3838838383838');
+  document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+  vertex_shader_source = __webpack_require__(47);
+  fragment_shader_source = __webpack_require__(46);
+  canvas = document.getElementById('canvas_000');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  gl = canvas.getContext('experimental-webgl');
+  fragment_shader = get_shader(gl, fragment_shader_source, gl.FRAGMENT_SHADER, 'FRAGMENT');
+  vertex_shader = get_shader(gl, vertex_shader_source, gl.VERTEX_SHADER, 'VERTEX');
+  program = gl.createProgram();
+  gl.attachShader(program, vertex_shader);
+  gl.attachShader(program, fragment_shader);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+  colorLocation = gl.getUniformLocation(program, "u_color");
+  resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+  buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  positionLocation = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+  return dispatch({
+    type: 'completed:init:webgl',
+    payload: {
+      gl: gl,
+      canvas: canvas,
+      colorLocation: colorLocation
+    }
+  });
+};
+
+exports["default"] = arq;
 
 
 /***/ })

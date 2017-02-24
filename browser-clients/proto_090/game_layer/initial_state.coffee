@@ -4,10 +4,10 @@ exports.default = ->
 
     js_state =
 
-        # spacewar_primus: spacewar_primus
+        spacewar_primus: spacewar_primus
 
-        sagas: Imm.Map
-            test_000: 'blahblah'
+        # sagas: Imm.Map
+        #     test_000: 'blahblah'
 
         desires:
             "#{shortid()}":

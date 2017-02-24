@@ -5,9 +5,9 @@ state_cache_reducer = ({ state_cache }) ->
 log_cache = Imm.List []
 
 
-desires = Imm.Map {}
 
-module.exports = ({
+
+exports.default = ({
     env,
     spacewar_primus,
     redis
@@ -18,11 +18,14 @@ module.exports = ({
 
     primary_state =
         log_cache: log_cache
-        desires: desires
+
+        desires: Imm.Map
+            "#{shortid()}":
+                type: 'primus:init_all_the_primus'
         ufo_sessions: Imm.Map({})
         lounger_sessions: Imm.Map({})
 
-        helsinki_primus: helsinki_primus
+        spacewar_primus: spacewar_primus
 
         chat_log: Imm.List([])
 
@@ -30,8 +33,8 @@ module.exports = ({
 
     state = Imm.fromJS state
 
-    di = { type: 'primus:init_all_the_primus' }
-
-    state = state.setIn ['desires', shortid()], di
+    # di = { type: 'primus:init_all_the_primus' }
+    #
+    # state = state.setIn ['desires', shortid()], di
 
     state
