@@ -19,13 +19,12 @@ set_ship = require('./physical_space/set_ship.coffee').default()
 arq = {}
 
 
-
-
-arq['gl_render'] = ({ state, dispatch }) ->
-
+gl_render = ({ state, dispatch }) ->
+    canvas = state.get 'canvas'
     gl = state.get 'gl'
     colorLocation = state.get 'colorLocation'
     s1_state = state.get 's1'
+    s1_deltas = state.get 's1_deltas'
 
     c 's1_state', s1_state
 
@@ -46,9 +45,7 @@ arq['gl_render'] = ({ state, dispatch }) ->
         gl: gl
         rayy: bk_rayy_3
         uni_color: [0, 0, 0, 1]
-    # gl.bufferData gl.ARRAY_BUFFER, bk_rayy_3, gl.STATIC_DRAW
-    # gl.uniform4f colorLocation, 0, 0, 0, 1
-    # gl.drawArrays gl.TRIANGLES, 0, 6
+
 
 
     draw_stars = " draw a bunch of stars"
@@ -61,17 +58,55 @@ arq['gl_render'] = ({ state, dispatch }) ->
                 colorLocation: colorLocation
 
 
-
     draw_ship_1 = " draw the first ship"
-    # { new_state: ship_1_state, ship_payload: ship_1_payload } = set_ship
 
+    { thrust, rota_rad } = s1_deltas.toJS()
+    c 's1_deltas', s1_deltas
+    c 'thrust', thrust
+    c 'rota_rad', rota_rad
+    c 'cos', cos
+
+    deltas =
+        del_rota_rad: rota_rad
+        del_vel_x: cos(s1_state.toJS().rota_rad) * thrust
+        del_vel_y: sin(s1_state.toJS().rota_rad) * thrust
+        del_time: .1
+
+
+    { new_state: ship_1_state, ship_payload: ship_1_payload } = set_ship
+        ship_state: s1_state.toJS()
+        deltas: deltas
+        canvas: canvas
+        dispatch: dispatch
+
+    c 'ship_1_payload', ship_1_payload
     # gl.bufferData gl.ARRAY_BUFFER, ship_1_payload, gl.STATIC_DRAW
-    gl.uniform4f colorLocation, 0, .9, .7, 1
-    gl.drawArrays gl.TRIANGLES, 0, 3
+    vend
+        colorLocation: colorLocation
+        gl: gl
+        rayy: ship_1_payload
+        uni_color: [0, .9, .7, 1]
 
 
     draw_ship_2 = 'draw the second ship'
     # gl.bufferData gl.ARRAY_BUFFER, ship_2_payload, gl.STATIC_
+
+
+
+arq['gl_render_iteration'] = ({ state, dispatch }) ->
+    gl_render { state, dispatch }
+
+arq['gl_render'] = ({ state, dispatch }) ->
+    render_loop_interval = setInterval ->
+        dispatch
+            type: 'render_loop_iterate'
+    , 10
+
+
+    dispatch
+        type: 'render_loop_activated'
+        payload: { render_loop_interval }
+
 
 
 

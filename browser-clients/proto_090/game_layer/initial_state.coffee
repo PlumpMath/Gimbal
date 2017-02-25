@@ -32,8 +32,8 @@ exports.default = ({ primus })->
             rota_rad: 0
 
         s1_deltas:
+            rota_rad: 0
             thrust: 0
-            delta_rota_rad: 0
             torpedo_fired: false
             laser_fired: false
 

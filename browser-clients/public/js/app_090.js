@@ -25432,8 +25432,8 @@ exports["default"] = function(arg) {
       rota_rad: 0
     },
     s1_deltas: {
+      rota_rad: 0,
       thrust: 0,
-      delta_rota_rad: 0,
       torpedo_fired: false,
       laser_fired: false
     },
@@ -25510,6 +25510,22 @@ var arq;
 
 arq = {};
 
+arq['render_loop_iterate'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  state = state.setIn(['desires', shortid()], {
+    type: 'gl_render_iteration'
+  });
+  return state;
+};
+
+arq['update_ship_state'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  state = state.setIn(['s1'], Imm.Map(action.payload));
+  return state;
+};
+
 arq['saga_test_one'] = function(arg) {
   var action, state;
   state = arg.state, action = arg.action;
@@ -25538,6 +25554,15 @@ arq['completed:init:webgl'] = function(arg) {
   return state;
 };
 
+arq['render_loop_activated'] = function(arg) {
+  var action, render_loop_interval, state;
+  state = arg.state, action = arg.action;
+  c('into render_loop_interval');
+  render_loop_interval = action.payload.render_loop_interval;
+  state = state.set('render_loop_interval', render_loop_interval);
+  return state;
+};
+
 exports["default"] = arq;
 
 
@@ -25545,13 +25570,7 @@ exports["default"] = arq;
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arq, gl_graphics_pipeline_effect, keys_arq, side_effects_f;
-
-gl_graphics_pipeline_effect = function(arg) {
-  var draw_a_bunch, gl_render_payload;
-  gl_render_payload = arg.gl_render_payload;
-  return draw_a_bunch = "of stuff on the screen";
-};
+var arq, keys_arq, side_effects_f;
 
 arq = {};
 
@@ -25596,7 +25615,7 @@ exports["default"] = side_effects_f;
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arq, galaxy_rayy, gl_tri, set_ship, vend;
+var arq, galaxy_rayy, gl_render, gl_tri, set_ship, vend;
 
 vend = function(arg) {
   var a, b, cardinal, colorLocation, g, gl, r, rayy, uni_color;
@@ -25616,12 +25635,14 @@ set_ship = __webpack_require__(52)["default"]();
 
 arq = {};
 
-arq['gl_render'] = function(arg) {
-  var bk_rayy_3, colorLocation, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, gl, i, idx, len, s1_state, star_rayy_2, state;
+gl_render = function(arg) {
+  var bk_rayy_3, canvas, colorLocation, deltas, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, gl, i, idx, len, ref, ref1, rota_rad, s1_deltas, s1_state, ship_1_payload, ship_1_state, star_rayy_2, state, thrust;
   state = arg.state, dispatch = arg.dispatch;
+  canvas = state.get('canvas');
   gl = state.get('gl');
   colorLocation = state.get('colorLocation');
   s1_state = state.get('s1');
+  s1_deltas = state.get('s1_deltas');
   c('s1_state', s1_state);
   bk_rayy_3 = new Float32Array([0, 0, 0, 1000, 2000, 0, 2000, 0, 0, 1000, 2000, 1000]);
   draw_space = " draw a black background ";
@@ -25647,9 +25668,56 @@ arq['gl_render'] = function(arg) {
     fn(star_rayy_2, idx);
   }
   draw_ship_1 = " draw the first ship";
-  gl.uniform4f(colorLocation, 0, .9, .7, 1);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  ref = s1_deltas.toJS(), thrust = ref.thrust, rota_rad = ref.rota_rad;
+  c('s1_deltas', s1_deltas);
+  c('thrust', thrust);
+  c('rota_rad', rota_rad);
+  c('cos', cos);
+  deltas = {
+    del_rota_rad: rota_rad,
+    del_vel_x: cos(s1_state.toJS().rota_rad) * thrust,
+    del_vel_y: sin(s1_state.toJS().rota_rad) * thrust,
+    del_time: .1
+  };
+  ref1 = set_ship({
+    ship_state: s1_state.toJS(),
+    deltas: deltas,
+    canvas: canvas,
+    dispatch: dispatch
+  }), ship_1_state = ref1.new_state, ship_1_payload = ref1.ship_payload;
+  c('ship_1_payload', ship_1_payload);
+  vend({
+    colorLocation: colorLocation,
+    gl: gl,
+    rayy: ship_1_payload,
+    uni_color: [0, .9, .7, 1]
+  });
   return draw_ship_2 = 'draw the second ship';
+};
+
+arq['gl_render_iteration'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  return gl_render({
+    state: state,
+    dispatch: dispatch
+  });
+};
+
+arq['gl_render'] = function(arg) {
+  var dispatch, render_loop_interval, state;
+  state = arg.state, dispatch = arg.dispatch;
+  render_loop_interval = setInterval(function() {
+    return dispatch({
+      type: 'render_loop_iterate'
+    });
+  }, 10);
+  return dispatch({
+    type: 'render_loop_activated',
+    payload: {
+      render_loop_interval: render_loop_interval
+    }
+  });
 };
 
 exports["default"] = arq;
@@ -37108,11 +37176,14 @@ exports["default"] = function() {
 exports["default"] = function() {
   var set_ship_002;
   set_ship_002 = function(arg) {
-    var bow, composed_t, cursor_x, cursor_y, del_rota_rad, del_time, del_vel_x, del_vel_y, deltas, new_bow, new_port, new_pos_x, new_pos_y, new_rota_rad, new_starboard, new_state, new_vel_x, new_vel_y, port, pos_x, pos_y, rota_rad, rotation_t, ship_payload, ship_state, shots_fired, starboard, translation_t, vel_x, vel_y;
-    ship_state = arg.ship_state, deltas = arg.deltas;
+    var bow, canvas, composed_t, cursor_x, cursor_y, del_rota_rad, del_time, del_vel_x, del_vel_y, deltas, dispatch, new_bow, new_port, new_pos_x, new_pos_y, new_rota_rad, new_starboard, new_state, new_vel_x, new_vel_y, port, pos_x, pos_y, rota_rad, rotation_t, ship_payload, ship_state, shots_fired, starboard, translation_t, vel_x, vel_y;
+    ship_state = arg.ship_state, deltas = arg.deltas, canvas = arg.canvas, dispatch = arg.dispatch;
     del_vel_x = deltas.del_vel_x, del_vel_y = deltas.del_vel_y, del_rota_rad = deltas.del_rota_rad, shots_fired = deltas.shots_fired, del_time = deltas.del_time;
+    c('ship_state', ship_state);
+    c('del_time', del_time);
     pos_x = ship_state.pos_x, pos_y = ship_state.pos_y, vel_x = ship_state.vel_x, vel_y = ship_state.vel_y, rota_rad = ship_state.rota_rad;
     new_vel_x = vel_x + del_vel_x;
+    c('new_vel_x', new_vel_x);
     new_vel_y = vel_y + del_vel_y;
     new_rota_rad = rota_rad + del_rota_rad;
     cursor_x = (pos_x + (del_time * new_vel_x)) % canvas.width;
@@ -37126,9 +37197,13 @@ exports["default"] = function() {
       vel_y: new_vel_y,
       rota_rad: new_rota_rad
     };
+    dispatch({
+      type: 'update_ship_state',
+      payload: new_state
+    });
     translation_t = [1, 0, 0, 0, 1, 0, new_pos_x, new_pos_y, 1];
     rotation_t = [cos(new_rota_rad), sin(new_rota_rad), 0, -(sin(new_rota_rad)), cos(new_rota_rad), 0, 0, 0, 1];
-    composed_t = mat3.multiply(mat3.create, translation_t, rotation_t);
+    composed_t = mat3.multiply(mat3.create(), translation_t, rotation_t);
     bow = [12, 0];
     port = [-3, 5];
     starboard = [-3, -5];

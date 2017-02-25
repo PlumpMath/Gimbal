@@ -1,14 +1,6 @@
 
 
 
-
-
-
-
-gl_graphics_pipeline_effect = ({ gl_render_payload }) ->
-    draw_a_bunch = "of stuff on the screen"
-
-
 arq = {}
 
 

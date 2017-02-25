@@ -4,6 +4,18 @@
 
 arq = {}
 
+arq['render_loop_iterate'] = ({ state, action }) ->
+
+    state = state.setIn ['desires', shortid()],
+        type: 'gl_render_iteration'
+
+    state
+
+
+arq['update_ship_state'] = ({ state, action }) ->
+    state = state.setIn ['s1'], Imm.Map(action.payload)
+    state
+
 arq['saga_test_one'] = ({ state, action }) ->
     c 'in saga_test_one', action
     state
@@ -26,7 +38,12 @@ arq['completed:init:webgl'] = ({ state, action, saga_channel }) ->
     state
 
 
+arq['render_loop_activated'] = ({ state, action }) ->
+    c 'into render_loop_interval'
+    { render_loop_interval } = action.payload
+    state = state.set 'render_loop_interval', render_loop_interval
 
+    state
 
 
 
