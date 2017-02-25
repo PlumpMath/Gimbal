@@ -5,6 +5,14 @@
 arq = {}
 
 
+arq['rotate_ship_2_clockwise'] = ({ state, action }) ->
+    state.setIn ['s2', 'rota_rad'], state.getIn(['s2', 'rota_rad']) + .1
+
+arq['rotate_ship_2_counterwise'] = ({ state, action }) ->
+    state.setIn ['s2', 'rota_rad'], state.getIn(['s2', 'rota_rad']) - .1
+
+arq['delta_thrust_ship_2'] = ({ state }) ->
+    state.setIn ['s2_deltas', 'thrust'], state.getIn(['s2_deltas', 'thrust']) + .5
 
 arq['delta_thrust_ship_1'] = ({ state }) ->
     state.setIn ['s1_deltas', 'thrust'], state.getIn(['s1_deltas', 'thrust']) + .5
@@ -19,9 +27,10 @@ arq['rotate_ship_1_counterwise'] = ({ state, action }) ->
     state = state.setIn ['s1', 'rota_rad'], rota_rad
     state
 
-arq['zero_derivatives'] = ({ state, action }) ->
+arq['zero_derivatives'] = ({ state }) ->
     state = state.setIn ['s1_deltas','thrust'], 0
-    # state = state.setIn ['s2_']
+    state = state.setIn ['s2_deltas','thrust'], 0
+    state
 
 
 arq['render_loop_iterate'] = ({ state, action }) ->

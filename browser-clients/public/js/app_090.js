@@ -25512,6 +25512,24 @@ var arq;
 
 arq = {};
 
+arq['rotate_ship_2_clockwise'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  return state.setIn(['s2', 'rota_rad'], state.getIn(['s2', 'rota_rad']) + .1);
+};
+
+arq['rotate_ship_2_counterwise'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  return state.setIn(['s2', 'rota_rad'], state.getIn(['s2', 'rota_rad']) - .1);
+};
+
+arq['delta_thrust_ship_2'] = function(arg) {
+  var state;
+  state = arg.state;
+  return state.setIn(['s2_deltas', 'thrust'], state.getIn(['s2_deltas', 'thrust']) + .5);
+};
+
 arq['delta_thrust_ship_1'] = function(arg) {
   var state;
   state = arg.state;
@@ -25534,9 +25552,11 @@ arq['rotate_ship_1_counterwise'] = function(arg) {
 };
 
 arq['zero_derivatives'] = function(arg) {
-  var action, state;
-  state = arg.state, action = arg.action;
-  return state = state.setIn(['s1_deltas', 'thrust'], 0);
+  var state;
+  state = arg.state;
+  state = state.setIn(['s1_deltas', 'thrust'], 0);
+  state = state.setIn(['s2_deltas', 'thrust'], 0);
+  return state;
 };
 
 arq['render_loop_iterate'] = function(arg) {
@@ -25672,12 +25692,12 @@ arq['init:keyboard_handler'] = function(arg) {
       case 88:
       case 81:
         return dispatch({
-          type: 'rotate_ship_2_step_counterwise'
+          type: 'rotate_ship_2_counterwise'
         });
       case 86:
       case 75:
         return dispatch({
-          type: 'rotate_ship_2_step_clockwise'
+          type: 'rotate_ship_2_clockwise'
         });
       case 67:
       case 74:

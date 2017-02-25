@@ -24,10 +24,10 @@ arq['init:keyboard_handler'] = ({ state, dispatch }) ->
         switch e.keyCode
             when 88, 81
                 dispatch
-                    type: 'rotate_ship_2_step_counterwise'
+                    type: 'rotate_ship_2_counterwise'
             when 86, 75
                 dispatch
-                    type: 'rotate_ship_2_step_clockwise'
+                    type: 'rotate_ship_2_clockwise'
             when 67, 74
                 dispatch
                     type: 'delta_thrust_ship_2'
