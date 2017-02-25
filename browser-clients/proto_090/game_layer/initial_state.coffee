@@ -22,10 +22,34 @@ exports.default = ({ primus })->
 
         counter: 0
 
-        s1_delta_thrust: 0
-        s1_delta_rota_rad: 0
-        s1_torpedo_fired: false
-        s1_laser_fired: false
+        torpedos_stack: []
+
+        s1:
+            pos_x: 800
+            pos_y: 300
+            vel_x: .5
+            vel_y: .5
+            rota_rad: 0
+
+        s1_deltas:
+            thrust: 0
+            delta_rota_rad: 0
+            torpedo_fired: false
+            laser_fired: false
+
+        s2:
+            pos_x: 300
+            pos_y: 300
+            vel_x: .5
+            vel_y: .5
+            rota_rad: 0
+
+
+
+        # s1_delta_thrust: 0
+        # s1_delta_rota_rad: 0
+        # s1_torpedo_fired: false
+        # s1_laser_fired: false
 
 
         s2_delta_thrust: 0

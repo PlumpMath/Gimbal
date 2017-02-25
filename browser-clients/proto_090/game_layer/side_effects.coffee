@@ -13,23 +13,13 @@ arq = {}
 
 
 arq = assign arq, require('./side_effects/init_webgl.coffee').default
-
 arq = assign arq, require('./side_effects/init.coffee').default
-
-
 arq = assign arq, require('./side_effects/gl_render.coffee').default
-
 arq = assign arq, require('./side_effects/workers.coffee').default
-
 
 keys_arq = keys arq
 
-# c 'keys_arq', keys_arq
-
-side_effects_f = ({ Dispatch }) ->
-
-    dispatch = (opts) ->
-        Dispatch.emit 'new_action', { action: opts }
+side_effects_f = ({ dispatch }) ->
 
     ({ state }) ->
         for key_id, desire of state.get('desires').toJS()

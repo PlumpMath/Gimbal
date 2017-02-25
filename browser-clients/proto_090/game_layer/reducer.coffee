@@ -4,18 +4,11 @@
 
 arq = {}
 
-# arq = assign arq, require('./reducer/lounge_ufo.coffee')
-
 arq = assign arq, require('./reducers/setup_feedback.coffee').default
 
 keys_arq = keys arq
 
-
-
-exports.default = ({ Dispatch }) ->
-
-    dispatch = (opts) ->
-        Dispatch.emit 'new_action', { action: opts }
+exports.default = ({ dispatch }) ->
 
     saga_channel = ({ state, action }) ->
         if includes(keys_arq, action.type)

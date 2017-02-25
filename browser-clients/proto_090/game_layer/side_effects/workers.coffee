@@ -6,6 +6,7 @@ arq = {}
 
 
 arq['setup:workers'] = ({ state, dispatch }) ->
+    c 'into setup workers'
     w = work(require.resolve('../workers/proto_worker_090.coffee'))
 
 

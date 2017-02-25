@@ -8,11 +8,14 @@ require './globals.coffee'
 
 Dispatch = new EE()
 
+dispatch = (opts) ->
+    Dispatch.emit 'new_action', { action: opts }
+
 
 exports.default = ->
 
-    reducer = require('./reducer.coffee').default { Dispatch }
-    side_effects = require('./side_effects.coffee').default { Dispatch }
+    reducer = require('./reducer.coffee').default { dispatch }
+    side_effects = require('./side_effects.coffee').default { dispatch }
 
     state = require('./initial_state.coffee').default { primus }
 
@@ -22,3 +25,5 @@ exports.default = ->
         side_effects { state }
 
     side_effects { state }
+
+    { dispatch }

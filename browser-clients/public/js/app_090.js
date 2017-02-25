@@ -25052,19 +25052,25 @@ module.exports = __webpack_require__(34)(_, _);
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Dispatch;
+var Dispatch, dispatch;
 
 __webpack_require__(16);
 
 Dispatch = new EE();
 
+dispatch = function(opts) {
+  return Dispatch.emit('new_action', {
+    action: opts
+  });
+};
+
 exports["default"] = function() {
   var reducer, side_effects, state;
   reducer = __webpack_require__(18)["default"]({
-    Dispatch: Dispatch
+    dispatch: dispatch
   });
   side_effects = __webpack_require__(20)["default"]({
-    Dispatch: Dispatch
+    dispatch: dispatch
   });
   state = __webpack_require__(17)["default"]({
     primus: primus
@@ -25080,9 +25086,12 @@ exports["default"] = function() {
       state: state
     });
   });
-  return side_effects({
+  side_effects({
     state: state
   });
+  return {
+    dispatch: dispatch
+  };
 };
 
 
@@ -25414,10 +25423,27 @@ exports["default"] = function(arg) {
       obj
     ),
     counter: 0,
-    s1_delta_thrust: 0,
-    s1_delta_rota_rad: 0,
-    s1_torpedo_fired: false,
-    s1_laser_fired: false,
+    torpedos_stack: [],
+    s1: {
+      pos_x: 800,
+      pos_y: 300,
+      vel_x: .5,
+      vel_y: .5,
+      rota_rad: 0
+    },
+    s1_deltas: {
+      thrust: 0,
+      delta_rota_rad: 0,
+      torpedo_fired: false,
+      laser_fired: false
+    },
+    s2: {
+      pos_x: 300,
+      pos_y: 300,
+      vel_x: .5,
+      vel_y: .5,
+      rota_rad: 0
+    },
     s2_delta_thrust: 0,
     s2_delta_rota_rad: 0,
     s2_torpedo_fired: false,
@@ -25441,13 +25467,8 @@ arq = assign(arq, __webpack_require__(19)["default"]);
 keys_arq = keys(arq);
 
 exports["default"] = function(arg) {
-  var Dispatch, dispatch, reducer, saga_channel;
-  Dispatch = arg.Dispatch;
-  dispatch = function(opts) {
-    return Dispatch.emit('new_action', {
-      action: opts
-    });
-  };
+  var dispatch, reducer, saga_channel;
+  dispatch = arg.dispatch;
   saga_channel = function(arg1) {
     var action, state;
     state = arg1.state, action = arg1.action;
@@ -25499,7 +25520,6 @@ arq['saga_test_one'] = function(arg) {
 arq['completed:init:webgl'] = function(arg) {
   var action, canvas, colorLocation, gl, ref, saga, saga_channel, state;
   state = arg.state, action = arg.action, saga_channel = arg.saga_channel;
-  c('into completed webgl', action.payload);
   ref = action.payload, gl = ref.gl, canvas = ref.canvas, colorLocation = ref.colorLocation;
   state = state.set('canvas', canvas);
   state = state.set('gl', gl);
@@ -25535,24 +25555,19 @@ gl_graphics_pipeline_effect = function(arg) {
 
 arq = {};
 
-arq = assign(arq, __webpack_require__(52)["default"]);
+arq = assign(arq, __webpack_require__(23)["default"]);
 
-arq = assign(arq, __webpack_require__(51)["default"]);
+arq = assign(arq, __webpack_require__(22)["default"]);
 
-arq = assign(arq, __webpack_require__(53)["default"]);
+arq = assign(arq, __webpack_require__(21)["default"]);
 
 arq = assign(arq, __webpack_require__(24)["default"]);
 
 keys_arq = keys(arq);
 
 side_effects_f = function(arg) {
-  var Dispatch, dispatch;
-  Dispatch = arg.Dispatch;
-  dispatch = function(opts) {
-    return Dispatch.emit('new_action', {
-      action: opts
-    });
-  };
+  var dispatch;
+  dispatch = arg.dispatch;
   return function(arg1) {
     var desire, key_id, ref, results, state;
     state = arg1.state;
@@ -25578,9 +25593,197 @@ exports["default"] = side_effects_f;
 
 
 /***/ }),
-/* 21 */,
-/* 22 */,
-/* 23 */,
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arq, galaxy_rayy, gl_tri, set_ship, vend;
+
+vend = function(arg) {
+  var a, b, cardinal, colorLocation, g, gl, r, rayy, uni_color;
+  rayy = arg.rayy, uni_color = arg.uni_color, gl = arg.gl, colorLocation = arg.colorLocation;
+  r = uni_color[0], g = uni_color[1], b = uni_color[2], a = uni_color[3];
+  cardinal = Math.floor(rayy.length / 2);
+  gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
+  gl.uniform4f(colorLocation, r, g, b, a);
+  return gl.drawArrays(gl.TRIANGLES, 0, cardinal);
+};
+
+gl_tri = {};
+
+galaxy_rayy = __webpack_require__(51)["default"]();
+
+set_ship = __webpack_require__(52)["default"]();
+
+arq = {};
+
+arq['gl_render'] = function(arg) {
+  var bk_rayy_3, colorLocation, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, gl, i, idx, len, s1_state, star_rayy_2, state;
+  state = arg.state, dispatch = arg.dispatch;
+  gl = state.get('gl');
+  colorLocation = state.get('colorLocation');
+  s1_state = state.get('s1');
+  c('s1_state', s1_state);
+  bk_rayy_3 = new Float32Array([0, 0, 0, 1000, 2000, 0, 2000, 0, 0, 1000, 2000, 1000]);
+  draw_space = " draw a black background ";
+  vend({
+    colorLocation: colorLocation,
+    gl: gl,
+    rayy: bk_rayy_3,
+    uni_color: [0, 0, 0, 1]
+  });
+  draw_stars = " draw a bunch of stars";
+  fn = (function(_this) {
+    return function(star_rayy_2, idx) {
+      return vend({
+        rayy: star_rayy_2,
+        uni_color: [1, Math.random(), 1, 1],
+        gl: gl,
+        colorLocation: colorLocation
+      });
+    };
+  })(this);
+  for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
+    star_rayy_2 = galaxy_rayy[idx];
+    fn(star_rayy_2, idx);
+  }
+  draw_ship_1 = " draw the first ship";
+  gl.uniform4f(colorLocation, 0, .9, .7, 1);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  return draw_ship_2 = 'draw the second ship';
+};
+
+exports["default"] = arq;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+var arq;
+
+arq = {};
+
+arq['init_primus'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  return primus.on('data', function(data) {
+    return dispatch({
+      type: 'primus:data',
+      payload: {
+        data: data
+      }
+    });
+  });
+};
+
+arq['init:keyboard_handler'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  c('init keyboard...');
+  return document.addEventListener('keydown', function(e) {
+    switch (e.keyCode) {
+      case 88:
+      case 81:
+        return dispatch({
+          type: 'rotate_ship_2_step_counterwise'
+        });
+      case 86:
+      case 75:
+        return dispatch({
+          type: 'rotate_ship_2_step_clockwise'
+        });
+      case 67:
+      case 74:
+        return dispatch({
+          type: 'delta_thrust_ship_2'
+        });
+      case 90:
+      case 191:
+        return dispatch({
+          type: 'ship_1_torpedo_fired'
+        });
+      case 32:
+        return dispatch({
+          type: 'ship_2_torpedo_fired'
+        });
+      case 37:
+        return dispatch({
+          type: 'rotate_ship_1_counterwise'
+        });
+      case 39:
+        return dispatch({
+          type: 'rotate_ship_2_clockwise'
+        });
+      case 38:
+        return dispatch({
+          type: 'delta_thrust_ship_1'
+        });
+    }
+  });
+};
+
+exports["default"] = arq;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arq, get_shader;
+
+get_shader = function(gl, source, type, typeString) {
+  var shader;
+  shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    c("error in" + typeString + " SHADER: " + gl.getShaderInfoLog(shader));
+    return false;
+  }
+  return shader;
+};
+
+arq = {};
+
+arq['init:init_webgl'] = function(arg) {
+  var buffer, canvas, colorLocation, desire, dispatch, fragment_shader, fragment_shader_source, gl, positionLocation, program, resolutionLocation, state, vertex_shader, vertex_shader_source;
+  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
+  document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+  vertex_shader_source = __webpack_require__(47);
+  fragment_shader_source = __webpack_require__(46);
+  canvas = document.getElementById('canvas_000');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  gl = canvas.getContext('experimental-webgl');
+  fragment_shader = get_shader(gl, fragment_shader_source, gl.FRAGMENT_SHADER, 'FRAGMENT');
+  vertex_shader = get_shader(gl, vertex_shader_source, gl.VERTEX_SHADER, 'VERTEX');
+  program = gl.createProgram();
+  gl.attachShader(program, vertex_shader);
+  gl.attachShader(program, fragment_shader);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+  colorLocation = gl.getUniformLocation(program, "u_color");
+  resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+  buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  positionLocation = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+  return dispatch({
+    type: 'completed:init:webgl',
+    payload: {
+      gl: gl,
+      canvas: canvas,
+      colorLocation: colorLocation
+    }
+  });
+};
+
+exports["default"] = arq;
+
+
+/***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25591,6 +25794,7 @@ arq = {};
 arq['setup:workers'] = function(arg) {
   var dispatch, primus_worker, state, w;
   state = arg.state, dispatch = arg.dispatch;
+  c('into setup workers');
   w = work(/*require.resolve*/(26));
   primus_worker = work(/*require.resolve*/(25));
   return setTimeout((function(_this) {
@@ -36869,193 +37073,76 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var game_layer_dispatch;
+
 __webpack_require__(13);
 
 c('into entry');
 
-__webpack_require__(12)["default"]();
+game_layer_dispatch = __webpack_require__(12)["default"]().dispatch;
+
+c('game_layer_dispatch', game_layer_dispatch);
 
 
 /***/ }),
 /* 51 */
 /***/ (function(module, exports) {
 
-var arq;
-
-arq = {};
-
-arq['init_primus'] = function(arg) {
-  var dispatch, state;
-  state = arg.state, dispatch = arg.dispatch;
-  return primus.on('data', function(data) {
-    return dispatch({
-      type: 'primus:data',
-      payload: {
-        data: data
-      }
-    });
-  });
+exports["default"] = function() {
+  var galaxy_rayy, i, idx, origin_vertex_x, origin_vertex_y, the_star;
+  galaxy_rayy = [];
+  for (idx = i = 0; i <= 922; idx = ++i) {
+    origin_vertex_x = parseInt(Math.random() * 2000);
+    origin_vertex_y = parseInt(Math.random() * 1000);
+    the_star = new Float32Array([origin_vertex_x, origin_vertex_y, origin_vertex_x - 2, origin_vertex_y + 2, origin_vertex_x + 1, origin_vertex_y]);
+    galaxy_rayy.push(the_star);
+  }
+  return galaxy_rayy;
 };
-
-arq['init:keyboard_handler'] = function(arg) {
-  var dispatch, state;
-  state = arg.state, dispatch = arg.dispatch;
-  c('init keyboard...');
-  return document.addEventListener('keydown', function(e) {
-    switch (e.keyCode) {
-      case 88:
-      case 81:
-        return dispatch({
-          type: 'rotate_ship_2_step_counterwise'
-        });
-      case 86:
-      case 75:
-        return dispatch({
-          type: 'rotate_ship_2_step_clockwise'
-        });
-      case 67:
-      case 74:
-        return dispatch({
-          type: 'delta_thrust_ship_2'
-        });
-      case 90:
-      case 191:
-        return dispatch({
-          type: 'ship_1_torpedo_fired'
-        });
-      case 32:
-        return dispatch({
-          type: 'ship_2_torpedo_fired'
-        });
-      case 37:
-        return dispatch({
-          type: 'rotate_ship_1_counterwise'
-        });
-      case 39:
-        return dispatch({
-          type: 'rotate_ship_2_clockwise'
-        });
-      case 38:
-        return dispatch({
-          type: 'delta_thrust_ship_1'
-        });
-    }
-  });
-};
-
-exports["default"] = arq;
 
 
 /***/ }),
 /* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arq, get_shader;
-
-get_shader = function(gl, source, type, typeString) {
-  var shader;
-  shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    c("error in" + typeString + " SHADER: " + gl.getShaderInfoLog(shader));
-    return false;
-  }
-  return shader;
-};
-
-arq = {};
-
-arq['init:init_webgl'] = function(arg) {
-  var buffer, canvas, colorLocation, desire, dispatch, fragment_shader, fragment_shader_source, gl, positionLocation, program, resolutionLocation, state, vertex_shader, vertex_shader_source;
-  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
-  document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-  vertex_shader_source = __webpack_require__(47);
-  fragment_shader_source = __webpack_require__(46);
-  canvas = document.getElementById('canvas_000');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  gl = canvas.getContext('experimental-webgl');
-  fragment_shader = get_shader(gl, fragment_shader_source, gl.FRAGMENT_SHADER, 'FRAGMENT');
-  vertex_shader = get_shader(gl, vertex_shader_source, gl.VERTEX_SHADER, 'VERTEX');
-  program = gl.createProgram();
-  gl.attachShader(program, vertex_shader);
-  gl.attachShader(program, fragment_shader);
-  gl.linkProgram(program);
-  gl.useProgram(program);
-  colorLocation = gl.getUniformLocation(program, "u_color");
-  resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-  buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  positionLocation = gl.getAttribLocation(program, "a_position");
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-  return dispatch({
-    type: 'completed:init:webgl',
-    payload: {
-      gl: gl,
-      canvas: canvas,
-      colorLocation: colorLocation
-    }
-  });
-};
-
-exports["default"] = arq;
-
-
-/***/ }),
-/* 53 */
 /***/ (function(module, exports) {
 
-var arq, gl_tri, vend;
-
-vend = function(arg) {
-  var a, b, cardinal, g, r, rayy, uni_color;
-  rayy = arg.rayy, uni_color = arg.uni_color;
-  r = unicolor[0], g = unicolor[1], b = unicolor[2], a = unicolor[3];
-  cardinal = Math.floor(rayy.length / 2);
-  gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
-  gl.uniform4f(colorLocation(r, g, b, a));
-  return gl.drawArrays(gl.TRIANGLES, 0, cardinal);
-};
-
-gl_tri = {};
-
-arq = {};
-
-arq['gl_render'] = function(arg) {
-  var desire, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, i, idx, len, payload, ship_1_payload, star_rayy_2, state;
-  state = arg.state, dispatch = arg.dispatch, desire = arg.desire;
-  payload = desire.payload;
-  ship_1_payload = payload.ship_1_payload;
-  draw_space = " draw a black background ";
-  vend({
-    rayy: bk_rayy_3,
-    uni_color: [0, 0, 0, 1]
-  });
-  draw_stars = " draw a bunch of stars";
-  fn = (function(_this) {
-    return function(star_rayy_2, idx) {
-      return vend({
-        rayy: star_rayy_2,
-        uni_color: [1, Math.random(), 1, 1]
-      });
+exports["default"] = function() {
+  var set_ship_002;
+  set_ship_002 = function(arg) {
+    var bow, composed_t, cursor_x, cursor_y, del_rota_rad, del_time, del_vel_x, del_vel_y, deltas, new_bow, new_port, new_pos_x, new_pos_y, new_rota_rad, new_starboard, new_state, new_vel_x, new_vel_y, port, pos_x, pos_y, rota_rad, rotation_t, ship_payload, ship_state, shots_fired, starboard, translation_t, vel_x, vel_y;
+    ship_state = arg.ship_state, deltas = arg.deltas;
+    del_vel_x = deltas.del_vel_x, del_vel_y = deltas.del_vel_y, del_rota_rad = deltas.del_rota_rad, shots_fired = deltas.shots_fired, del_time = deltas.del_time;
+    pos_x = ship_state.pos_x, pos_y = ship_state.pos_y, vel_x = ship_state.vel_x, vel_y = ship_state.vel_y, rota_rad = ship_state.rota_rad;
+    new_vel_x = vel_x + del_vel_x;
+    new_vel_y = vel_y + del_vel_y;
+    new_rota_rad = rota_rad + del_rota_rad;
+    cursor_x = (pos_x + (del_time * new_vel_x)) % canvas.width;
+    new_pos_x = cursor_x > 0 ? cursor_x : canvas.width - cursor_x;
+    cursor_y = (pos_y + (del_time * new_vel_y)) % canvas.height;
+    new_pos_y = cursor_y > 0 ? cursor_y : canvas.height - cursor_y;
+    new_state = {
+      pos_x: new_pos_x,
+      pos_y: new_pos_y,
+      vel_x: new_vel_x,
+      vel_y: new_vel_y,
+      rota_rad: new_rota_rad
     };
-  })(this);
-  for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
-    star_rayy_2 = galaxy_rayy[idx];
-    fn(star_rayy_2, idx);
-  }
-  draw_ship_1 = " draw the first ship";
-  gl.bufferData(gl.ARRAY_BUFFER, ship_1_payload, gl.STATIC_DRAW);
-  gl.uniform4f(colorLocation, 0, .9, .7, 1);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
-  draw_ship_2 = 'draw the second ship';
-  return gl.bufferData(gl.ARRAY_BUFFER, ship_2_payload, gl.STATIC_);
+    translation_t = [1, 0, 0, 0, 1, 0, new_pos_x, new_pos_y, 1];
+    rotation_t = [cos(new_rota_rad), sin(new_rota_rad), 0, -(sin(new_rota_rad)), cos(new_rota_rad), 0, 0, 0, 1];
+    composed_t = mat3.multiply(mat3.create, translation_t, rotation_t);
+    bow = [12, 0];
+    port = [-3, 5];
+    starboard = [-3, -5];
+    new_bow = vec2.transformMat3(vec2.create(), bow, composed_t);
+    new_port = vec2.transformMat3(vec2.create(), port, composed_t);
+    new_starboard = vec2.transformMat3(vec2.create(), starboard, composed_t);
+    ship_payload = new Float32Array([new_bow[0], new_bow[1], new_port[0], new_port[1], new_starboard[0], new_starboard[1]]);
+    return {
+      new_state: new_state,
+      ship_payload: ship_payload
+    };
+  };
+  return set_ship_002;
 };
-
-exports["default"] = arq;
 
 
 /***/ })
