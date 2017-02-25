@@ -25442,12 +25442,14 @@ exports["default"] = function(arg) {
       pos_y: 300,
       vel_x: .5,
       vel_y: .5,
-      rota_rad: 0
+      rota_rad: .3
     },
-    s2_delta_thrust: 0,
-    s2_delta_rota_rad: 0,
-    s2_torpedo_fired: false,
-    s2_laser_fired: false
+    s2_deltas: {
+      rota_rad: 0,
+      thrust: 0,
+      torpedo_fired: false,
+      laser_fired: false
+    }
   };
   state = Imm.fromJS(js_state);
   return state;
@@ -25534,7 +25536,7 @@ arq['rotate_ship_1_counterwise'] = function(arg) {
 arq['zero_derivatives'] = function(arg) {
   var action, state;
   state = arg.state, action = arg.action;
-  return state.setIn(['s1_deltas', 'thrust'], 0);
+  return state = state.setIn(['s1_deltas', 'thrust'], 0);
 };
 
 arq['render_loop_iterate'] = function(arg) {
@@ -25547,9 +25549,10 @@ arq['render_loop_iterate'] = function(arg) {
 };
 
 arq['update_ship_state'] = function(arg) {
-  var action, state;
+  var action, id, new_state, ref, state;
   state = arg.state, action = arg.action;
-  state = state.setIn(['s1'], Imm.Map(action.payload));
+  ref = action.payload, id = ref.id, new_state = ref.new_state;
+  state = state.setIn([id], Imm.Map(new_state));
   return state;
 };
 
@@ -25605,7 +25608,7 @@ arq = assign(arq, __webpack_require__(23)["default"]);
 
 arq = assign(arq, __webpack_require__(22)["default"]);
 
-arq = assign(arq, __webpack_require__(21)["default"]);
+arq = assign(arq, __webpack_require__(53)["default"]);
 
 arq = assign(arq, __webpack_require__(24)["default"]);
 
@@ -25639,121 +25642,7 @@ exports["default"] = side_effects_f;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arq, galaxy_rayy, gl_render, gl_tri, set_ship, vend;
-
-vend = function(arg) {
-  var a, b, cardinal, colorLocation, g, gl, r, rayy, uni_color;
-  rayy = arg.rayy, uni_color = arg.uni_color, gl = arg.gl, colorLocation = arg.colorLocation;
-  r = uni_color[0], g = uni_color[1], b = uni_color[2], a = uni_color[3];
-  cardinal = Math.floor(rayy.length / 2);
-  gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
-  gl.uniform4f(colorLocation, r, g, b, a);
-  return gl.drawArrays(gl.TRIANGLES, 0, cardinal);
-};
-
-gl_tri = {};
-
-galaxy_rayy = __webpack_require__(51)["default"]();
-
-set_ship = __webpack_require__(52)["default"]();
-
-arq = {};
-
-gl_render = function(arg) {
-  var bk_rayy_3, canvas, colorLocation, deltas, dispatch, draw_ship_1, draw_ship_2, draw_space, draw_stars, fn, gl, i, idx, len, ref, ref1, rota_rad, s1_deltas, s1_state, ship_1_payload, ship_1_state, star_rayy_2, state, thrust;
-  state = arg.state, dispatch = arg.dispatch;
-  canvas = state.get('canvas');
-  gl = state.get('gl');
-  colorLocation = state.get('colorLocation');
-  s1_state = state.get('s1');
-  s1_deltas = state.get('s1_deltas');
-  c('s1_state', s1_state);
-  bk_rayy_3 = new Float32Array([0, 0, 0, 1000, 2000, 0, 2000, 0, 0, 1000, 2000, 1000]);
-  draw_space = " draw a black background ";
-  vend({
-    colorLocation: colorLocation,
-    gl: gl,
-    rayy: bk_rayy_3,
-    uni_color: [0, 0, 0, 1]
-  });
-  draw_stars = " draw a bunch of stars";
-  fn = (function(_this) {
-    return function(star_rayy_2, idx) {
-      return vend({
-        rayy: star_rayy_2,
-        uni_color: [1, Math.random(), 1, 1],
-        gl: gl,
-        colorLocation: colorLocation
-      });
-    };
-  })(this);
-  for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
-    star_rayy_2 = galaxy_rayy[idx];
-    fn(star_rayy_2, idx);
-  }
-  draw_ship_1 = " draw the first ship";
-  ref = s1_deltas.toJS(), thrust = ref.thrust, rota_rad = ref.rota_rad;
-  c('s1_deltas', s1_deltas);
-  c('thrust', thrust);
-  c('rota_rad', rota_rad);
-  c('cos', cos);
-  deltas = {
-    del_rota_rad: rota_rad,
-    del_vel_x: cos(s1_state.toJS().rota_rad) * thrust,
-    del_vel_y: sin(s1_state.toJS().rota_rad) * thrust,
-    del_time: .1
-  };
-  ref1 = set_ship({
-    ship_state: s1_state.toJS(),
-    deltas: deltas,
-    canvas: canvas,
-    dispatch: dispatch
-  }), ship_1_state = ref1.new_state, ship_1_payload = ref1.ship_payload;
-  c('ship_1_payload', ship_1_payload);
-  vend({
-    colorLocation: colorLocation,
-    gl: gl,
-    rayy: ship_1_payload,
-    uni_color: [0, .9, .7, 1]
-  });
-  return draw_ship_2 = 'draw the second ship';
-};
-
-arq['gl_render_iteration'] = function(arg) {
-  var dispatch, state;
-  state = arg.state, dispatch = arg.dispatch;
-  gl_render({
-    state: state,
-    dispatch: dispatch
-  });
-  return dispatch({
-    type: 'zero_derivatives'
-  });
-};
-
-arq['gl_render'] = function(arg) {
-  var dispatch, render_loop_interval, state;
-  state = arg.state, dispatch = arg.dispatch;
-  render_loop_interval = setInterval(function() {
-    return dispatch({
-      type: 'render_loop_iterate'
-    });
-  }, 10);
-  return dispatch({
-    type: 'render_loop_activated',
-    payload: {
-      render_loop_interval: render_loop_interval
-    }
-  });
-};
-
-exports["default"] = arq;
-
-
-/***/ }),
+/* 21 */,
 /* 22 */
 /***/ (function(module, exports) {
 
@@ -37183,35 +37072,113 @@ c('game_layer_dispatch', game_layer_dispatch);
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports) {
+/* 51 */,
+/* 52 */,
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
 
-exports["default"] = function() {
-  var galaxy_rayy, i, idx, origin_vertex_x, origin_vertex_y, the_star;
-  galaxy_rayy = [];
-  for (idx = i = 0; i <= 922; idx = ++i) {
-    origin_vertex_x = parseInt(Math.random() * 2000);
-    origin_vertex_y = parseInt(Math.random() * 1000);
-    the_star = new Float32Array([origin_vertex_x, origin_vertex_y, origin_vertex_x - 2, origin_vertex_y + 2, origin_vertex_x + 1, origin_vertex_y]);
-    galaxy_rayy.push(the_star);
-  }
-  return galaxy_rayy;
+var arq, gl_render, render_factory, render_ship, render_space_stars, set_ship;
+
+render_factory = function(arg) {
+  var colorLocation, gl;
+  gl = arg.gl, colorLocation = arg.colorLocation;
+  return function(arg1) {
+    var a, b, g, r, rayy, uni_color;
+    uni_color = arg1.uni_color, rayy = arg1.rayy;
+    r = uni_color[0], g = uni_color[1], b = uni_color[2], a = uni_color[3];
+    gl.bufferData(gl.ARRAY_BUFFER, rayy, gl.STATIC_DRAW);
+    gl.uniform4f(colorLocation, r, g, b, a);
+    return gl.drawArrays(gl.TRIANGLES, 0, rayy.length / 2);
+  };
 };
+
+render_space_stars = __webpack_require__(57)["default"];
+
+render_ship = __webpack_require__(58)["default"];
+
+set_ship = __webpack_require__(54)["default"]();
+
+arq = {};
+
+gl_render = function(arg) {
+  var canvas, colorLocation, dispatch, gl, render, s1_deltas, s1_state, s2_deltas, s2_state, state;
+  state = arg.state, dispatch = arg.dispatch;
+  canvas = state.get('canvas');
+  gl = state.get('gl');
+  colorLocation = state.get('colorLocation');
+  render = render_factory({
+    gl: gl,
+    colorLocation: colorLocation
+  });
+  render_space_stars({
+    render: render
+  });
+  s1_state = state.get('s1').toJS();
+  s1_deltas = state.get('s1_deltas').toJS();
+  render_ship({
+    id: 's1',
+    render: render,
+    dispatch: dispatch,
+    canvas: canvas,
+    ship_state: s1_state,
+    ship_deltas: s1_deltas
+  });
+  s2_state = state.get('s2').toJS();
+  s2_deltas = state.get('s2_deltas').toJS();
+  return render_ship({
+    id: 's2',
+    render: render,
+    dispatch: dispatch,
+    canvas: canvas,
+    ship_state: s2_state,
+    ship_deltas: s2_deltas
+  });
+};
+
+arq['gl_render_iteration'] = function(arg) {
+  var dispatch, state;
+  state = arg.state, dispatch = arg.dispatch;
+  gl_render({
+    state: state,
+    dispatch: dispatch
+  });
+  return dispatch({
+    type: 'zero_derivatives'
+  });
+};
+
+arq['gl_render'] = function(arg) {
+  var dispatch, render_loop_interval, state;
+  state = arg.state, dispatch = arg.dispatch;
+  render_loop_interval = setInterval(function() {
+    return dispatch({
+      type: 'render_loop_iterate'
+    });
+  }, 10);
+  return dispatch({
+    type: 'render_loop_activated',
+    payload: {
+      render_loop_interval: render_loop_interval
+    }
+  });
+};
+
+exports["default"] = arq;
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports) {
 
 exports["default"] = function() {
   var set_ship_002;
   set_ship_002 = function(arg) {
-    var bow, canvas, composed_t, cursor_x, cursor_y, del_rota_rad, del_time, del_vel_x, del_vel_y, deltas, dispatch, new_bow, new_port, new_pos_x, new_pos_y, new_rota_rad, new_starboard, new_state, new_vel_x, new_vel_y, port, pos_x, pos_y, rota_rad, rotation_t, ship_payload, ship_state, shots_fired, starboard, translation_t, vel_x, vel_y;
-    ship_state = arg.ship_state, deltas = arg.deltas, canvas = arg.canvas, dispatch = arg.dispatch;
+    var bow, canvas, composed_t, cursor_x, cursor_y, del_rota_rad, del_time, del_vel_x, del_vel_y, deltas, dispatch, id, new_bow, new_port, new_pos_x, new_pos_y, new_rota_rad, new_starboard, new_state, new_vel_x, new_vel_y, port, pos_x, pos_y, rota_rad, rotation_t, ship_payload, ship_state, shots_fired, starboard, translation_t, vel_x, vel_y;
+    ship_state = arg.ship_state, deltas = arg.deltas, canvas = arg.canvas, dispatch = arg.dispatch, id = arg.id;
     del_vel_x = deltas.del_vel_x, del_vel_y = deltas.del_vel_y, del_rota_rad = deltas.del_rota_rad, shots_fired = deltas.shots_fired, del_time = deltas.del_time;
-    c('ship_state', ship_state);
-    c('del_time', del_time);
+    c('deltas', deltas);
     pos_x = ship_state.pos_x, pos_y = ship_state.pos_y, vel_x = ship_state.vel_x, vel_y = ship_state.vel_y, rota_rad = ship_state.rota_rad;
+    c('ship_state', ship_state);
     new_vel_x = vel_x + del_vel_x;
     c('new_vel_x', new_vel_x);
     new_vel_y = vel_y + del_vel_y;
@@ -37229,7 +37196,10 @@ exports["default"] = function() {
     };
     dispatch({
       type: 'update_ship_state',
-      payload: new_state
+      payload: {
+        new_state: new_state,
+        id: id
+      }
     });
     translation_t = [1, 0, 0, 0, 1, 0, new_pos_x, new_pos_y, 1];
     rotation_t = [cos(new_rota_rad), sin(new_rota_rad), 0, -(sin(new_rota_rad)), cos(new_rota_rad), 0, 0, 0, 1];
@@ -37242,12 +37212,93 @@ exports["default"] = function() {
     new_starboard = vec2.transformMat3(vec2.create(), starboard, composed_t);
     ship_payload = new Float32Array([new_bow[0], new_bow[1], new_port[0], new_port[1], new_starboard[0], new_starboard[1]]);
     return {
-      new_state: new_state,
       ship_payload: ship_payload
     };
   };
   return set_ship_002;
 };
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports) {
+
+exports["default"] = function() {
+  var galaxy_rayy, i, idx, origin_vertex_x, origin_vertex_y, the_star;
+  galaxy_rayy = [];
+  for (idx = i = 0; i <= 922; idx = ++i) {
+    origin_vertex_x = parseInt(Math.random() * 2000);
+    origin_vertex_y = parseInt(Math.random() * 1000);
+    the_star = new Float32Array([origin_vertex_x, origin_vertex_y, origin_vertex_x - 2, origin_vertex_y + 2, origin_vertex_x + 1, origin_vertex_y]);
+    galaxy_rayy.push(the_star);
+  }
+  return galaxy_rayy;
+};
+
+
+/***/ }),
+/* 56 */,
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var galaxy_rayy, render_space_stars;
+
+galaxy_rayy = __webpack_require__(55)["default"]();
+
+render_space_stars = function(arg) {
+  var bk_rayy_3, i, idx, len, render, results, star_rayy_2;
+  render = arg.render;
+  bk_rayy_3 = new Float32Array([0, 0, 0, 1000, 2000, 0, 2000, 0, 0, 1000, 2000, 1000]);
+  render({
+    rayy: bk_rayy_3,
+    uni_color: [0, 0, 0, 1]
+  });
+  results = [];
+  for (idx = i = 0, len = galaxy_rayy.length; i < len; idx = ++i) {
+    star_rayy_2 = galaxy_rayy[idx];
+    results.push(render({
+      rayy: star_rayy_2,
+      uni_color: [1, Math.random(), 1, 1]
+    }));
+  }
+  return results;
+};
+
+exports["default"] = render_space_stars;
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render_ship, set_ship;
+
+set_ship = __webpack_require__(54)["default"]();
+
+render_ship = function(arg) {
+  var canvas, deltas, dispatch, id, render, rota_rad, ship_deltas, ship_payload, ship_state, thrust;
+  ship_state = arg.ship_state, ship_deltas = arg.ship_deltas, render = arg.render, canvas = arg.canvas, dispatch = arg.dispatch, id = arg.id;
+  thrust = ship_deltas.thrust, rota_rad = ship_deltas.rota_rad;
+  deltas = {
+    del_rota_rad: rota_rad,
+    del_vel_x: cos(ship_state.rota_rad) * thrust,
+    del_vel_y: sin(ship_state.rota_rad) * thrust,
+    del_time: .1
+  };
+  ship_payload = set_ship({
+    ship_state: ship_state,
+    deltas: deltas,
+    canvas: canvas,
+    dispatch: dispatch,
+    id: id
+  }).ship_payload;
+  return render({
+    rayy: ship_payload,
+    uni_color: [0, .9, .7, 1]
+  });
+};
+
+exports["default"] = render_ship;
 
 
 /***/ })

@@ -42,20 +42,14 @@ exports.default = ({ primus })->
             pos_y: 300
             vel_x: .5
             vel_y: .5
+            rota_rad: .3
+
+        s2_deltas:
             rota_rad: 0
+            thrust: 0
+            torpedo_fired: false
+            laser_fired: false
 
-
-
-        # s1_delta_thrust: 0
-        # s1_delta_rota_rad: 0
-        # s1_torpedo_fired: false
-        # s1_laser_fired: false
-
-
-        s2_delta_thrust: 0
-        s2_delta_rota_rad: 0
-        s2_torpedo_fired: false
-        s2_laser_fired: false
 
     state = Imm.fromJS js_state
     state

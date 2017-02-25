@@ -3,15 +3,17 @@
 
 
 exports.default = ->
-    set_ship_002 = ({ ship_state, deltas, canvas, dispatch }) ->
+    set_ship_002 = ({ ship_state, deltas, canvas, dispatch, id }) ->
 
-        { del_vel_x, del_vel_y, del_rota_rad, shots_fired, del_time } = deltas
-
+        {
+            del_vel_x, del_vel_y, del_rota_rad,
+            shots_fired, del_time
+        } = deltas
+        c 'deltas', deltas
+        {
+            pos_x, pos_y, vel_x, vel_y, rota_rad
+        } = ship_state
         c 'ship_state', ship_state
-        c 'del_time', del_time
-
-
-        { pos_x, pos_y, vel_x, vel_y, rota_rad } = ship_state
         new_vel_x = vel_x + del_vel_x
         c 'new_vel_x', new_vel_x
         new_vel_y = vel_y + del_vel_y
@@ -30,7 +32,7 @@ exports.default = ->
 
         dispatch
             type: 'update_ship_state'
-            payload: new_state
+            payload: { new_state, id }
 
         translation_t = [
             1, 0, 0,
@@ -51,9 +53,9 @@ exports.default = ->
         starboard = [-3, -5]
 
         new_bow = vec2.transformMat3 vec2.create(), bow, composed_t
-
         new_port = vec2.transformMat3 vec2.create(), port, composed_t
-        new_starboard = vec2.transformMat3 vec2.create(), starboard, composed_t
+        new_starboard =
+        vec2.transformMat3 vec2.create(), starboard, composed_t
 
         ship_payload = new Float32Array [
             new_bow[0], new_bow[1],
@@ -61,6 +63,6 @@ exports.default = ->
             new_starboard[0], new_starboard[1]
         ]
 
-        { new_state , ship_payload }
+        { ship_payload }
 
     set_ship_002

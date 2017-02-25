@@ -20,7 +20,9 @@ arq['rotate_ship_1_counterwise'] = ({ state, action }) ->
     state
 
 arq['zero_derivatives'] = ({ state, action }) ->
-    state.setIn ['s1_deltas','thrust'], 0
+    state = state.setIn ['s1_deltas','thrust'], 0
+    # state = state.setIn ['s2_']
+
 
 arq['render_loop_iterate'] = ({ state, action }) ->
     state = state.setIn ['desires', shortid()],
@@ -28,7 +30,8 @@ arq['render_loop_iterate'] = ({ state, action }) ->
     state
 
 arq['update_ship_state'] = ({ state, action }) ->
-    state = state.setIn ['s1'], Imm.Map(action.payload)
+    { id, new_state } = action.payload
+    state = state.setIn [id], Imm.Map(new_state)
     state
 
 arq['saga_test_one'] = ({ state, action }) ->
