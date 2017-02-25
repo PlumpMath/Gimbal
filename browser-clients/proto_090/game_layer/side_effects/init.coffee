@@ -42,7 +42,7 @@ arq['init:keyboard_handler'] = ({ state, dispatch }) ->
                     type: 'rotate_ship_1_counterwise'
             when 39
                 dispatch
-                    type: 'rotate_ship_2_clockwise'
+                    type: 'rotate_ship_1_clockwise'
             when 38
                 dispatch
                     type: 'delta_thrust_ship_1'

@@ -27,8 +27,8 @@ exports.default = ({ primus })->
         s1:
             pos_x: 800
             pos_y: 300
-            vel_x: .5
-            vel_y: .5
+            vel_x: 5
+            vel_y: 5
             rota_rad: 0
 
         s1_deltas:

@@ -4,13 +4,28 @@
 
 arq = {}
 
-arq['render_loop_iterate'] = ({ state, action }) ->
 
-    state = state.setIn ['desires', shortid()],
-        type: 'gl_render_iteration'
 
+arq['delta_thrust_ship_1'] = ({ state }) ->
+    state.setIn ['s1_deltas', 'thrust'], state.getIn(['s1_deltas', 'thrust']) + .5
+
+
+arq['rotate_ship_1_clockwise'] = ({ state, action }) ->
+    state.setIn ['s1', 'rota_rad'], state.getIn(['s1', 'rota_rad']) + .1
+
+arq['rotate_ship_1_counterwise'] = ({ state, action }) ->
+    rota_rad = state.getIn ['s1', 'rota_rad']
+    rota_rad = rota_rad -= .1
+    state = state.setIn ['s1', 'rota_rad'], rota_rad
     state
 
+arq['zero_derivatives'] = ({ state, action }) ->
+    state.setIn ['s1_deltas','thrust'], 0
+
+arq['render_loop_iterate'] = ({ state, action }) ->
+    state = state.setIn ['desires', shortid()],
+        type: 'gl_render_iteration'
+    state
 
 arq['update_ship_state'] = ({ state, action }) ->
     state = state.setIn ['s1'], Imm.Map(action.payload)

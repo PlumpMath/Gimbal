@@ -95,6 +95,8 @@ gl_render = ({ state, dispatch }) ->
 
 arq['gl_render_iteration'] = ({ state, dispatch }) ->
     gl_render { state, dispatch }
+    dispatch
+        type: 'zero_derivatives'
 
 arq['gl_render'] = ({ state, dispatch }) ->
     render_loop_interval = setInterval ->

@@ -25427,8 +25427,8 @@ exports["default"] = function(arg) {
     s1: {
       pos_x: 800,
       pos_y: 300,
-      vel_x: .5,
-      vel_y: .5,
+      vel_x: 5,
+      vel_y: 5,
       rota_rad: 0
     },
     s1_deltas: {
@@ -25509,6 +25509,33 @@ exports["default"] = function(arg) {
 var arq;
 
 arq = {};
+
+arq['delta_thrust_ship_1'] = function(arg) {
+  var state;
+  state = arg.state;
+  return state.setIn(['s1_deltas', 'thrust'], state.getIn(['s1_deltas', 'thrust']) + .5);
+};
+
+arq['rotate_ship_1_clockwise'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  return state.setIn(['s1', 'rota_rad'], state.getIn(['s1', 'rota_rad']) + .1);
+};
+
+arq['rotate_ship_1_counterwise'] = function(arg) {
+  var action, rota_rad, state;
+  state = arg.state, action = arg.action;
+  rota_rad = state.getIn(['s1', 'rota_rad']);
+  rota_rad = rota_rad -= .1;
+  state = state.setIn(['s1', 'rota_rad'], rota_rad);
+  return state;
+};
+
+arq['zero_derivatives'] = function(arg) {
+  var action, state;
+  state = arg.state, action = arg.action;
+  return state.setIn(['s1_deltas', 'thrust'], 0);
+};
 
 arq['render_loop_iterate'] = function(arg) {
   var action, state;
@@ -25698,9 +25725,12 @@ gl_render = function(arg) {
 arq['gl_render_iteration'] = function(arg) {
   var dispatch, state;
   state = arg.state, dispatch = arg.dispatch;
-  return gl_render({
+  gl_render({
     state: state,
     dispatch: dispatch
+  });
+  return dispatch({
+    type: 'zero_derivatives'
   });
 };
 
@@ -25780,7 +25810,7 @@ arq['init:keyboard_handler'] = function(arg) {
         });
       case 39:
         return dispatch({
-          type: 'rotate_ship_2_clockwise'
+          type: 'rotate_ship_1_clockwise'
         });
       case 38:
         return dispatch({
