@@ -40815,16 +40815,17 @@ exports["default"] = function() {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports["default"] = function(arg) {
-  var Provider, game_layer_dispatch, gui_root_component, gui_root_el, scaffold, store;
+  var Provider, game_layer_dispatch, gui_root_component, gui_root_el, scaffold, set_and_render, store;
   game_layer_dispatch = arg.game_layer_dispatch;
   __webpack_require__(128);
   gui_root_el = document.getElementById('gui_root');
   Provider = rc(__webpack_require__(95).Provider);
-  store = __webpack_require__(129)({
+  store = __webpack_require__(129)["default"]({
     game_layer_dispatch: game_layer_dispatch
   });
   scaffold = rr({
     render: function() {
+      c('rendering scaffold');
       return h1({
         style: {
           textAlign: 'center',
@@ -40842,8 +40843,20 @@ exports["default"] = function(arg) {
       }, scaffold());
     }
   });
-  return {
+  ({
     gui_dispatch: store.dispatch
+  });
+  set_and_render = function() {
+    var height, ref, width;
+    ref = gui_root_el.getBoundingClientRect(), width = ref.width, height = ref.height;
+    return React_DOM.render(gui_root_component({
+      ww: width,
+      wh: height
+    }), gui_root_el);
+  };
+  return window.onload = function() {
+    set_and_render();
+    return window.onresize = debounce(set_and_render, 100, false);
   };
 };
 
@@ -41857,7 +41870,7 @@ window.reduce = _.reduce;
 /* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var applyMiddleware, combineReducers, compose, createStore, gui, imm_initial_state, initial_state, middleware, reducers, ref, set, side_effect_trigger_f, side_effects, state_js, store, thunk;
+var applyMiddleware, combineReducers, compose, createStore, middleware, ref, thunk;
 
 ref = __webpack_require__(105), applyMiddleware = ref.applyMiddleware, compose = ref.compose, createStore = ref.createStore;
 
@@ -41867,47 +41880,41 @@ thunk = __webpack_require__(264)["default"];
 
 middleware = thunk;
 
-gui = __webpack_require__(131)["default"];
-
-reducers = {
-  gui: gui
-};
-
-initial_state = __webpack_require__(130)["default"];
-
-imm_initial_state = Imm.fromJS(initial_state);
-
-store = createStore(combineReducers(reducers), imm_initial_state, compose(applyMiddleware(middleware)));
-
-side_effects = __webpack_require__(132)["default"]({
-  store: store
-});
-
-side_effect_trigger_f = function(arg) {
-  var store;
-  store = arg.store;
-  return function() {
-    var state_js;
-    state_js = store.getState().toJS();
-    return side_effects({
-      state_js: state_js
-    });
+exports["default"] = function(arg) {
+  var game_layer_dispatch, gui, imm_initial_state, initial_state, reducers, set, side_effect_trigger_f, side_effects, state_js, store;
+  game_layer_dispatch = arg.game_layer_dispatch;
+  gui = __webpack_require__(131)["default"];
+  reducers = {
+    gui: gui
   };
+  initial_state = __webpack_require__(130)["default"];
+  imm_initial_state = Imm.fromJS(initial_state);
+  store = createStore(combineReducers(reducers), imm_initial_state, compose(applyMiddleware(middleware)));
+  side_effects = __webpack_require__(132)["default"]({
+    store: store,
+    game_layer_dispatch: game_layer_dispatch
+  });
+  side_effect_trigger_f = function(arg1) {
+    var store;
+    store = arg1.store;
+    return function() {
+      var state_js;
+      state_js = store.getState().toJS();
+      return side_effects({
+        state_js: state_js
+      });
+    };
+  };
+  set = side_effect_trigger_f({
+    store: store
+  });
+  store.subscribe(set);
+  state_js = imm_initial_state.toJS();
+  side_effects({
+    state_js: state_js
+  });
+  return store;
 };
-
-set = side_effect_trigger_f({
-  store: store
-});
-
-store.subscribe(set);
-
-state_js = imm_initial_state.toJS();
-
-side_effects({
-  state_js: state_js
-});
-
-module.exports = store;
 
 
 /***/ }),
@@ -41966,7 +41973,7 @@ side_effects_f = function(arg) {
     var desire, key_id, ref, results, state, state_js;
     state_js = arg1.state_js;
     state = state_js;
-    ref = state.lounger.desires;
+    ref = state.gui.desires;
     results = [];
     for (key_id in ref) {
       desire = ref[key_id];
