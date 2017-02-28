@@ -41175,6 +41175,9 @@ exports["default"] = function(arg) {
     desires: (
       obj = {},
       obj["" + (shortid())] = {
+        type: 'init_webrtc'
+      },
+      obj["" + (shortid())] = {
         type: 'init:init_webgl'
       },
       obj["" + (shortid())] = {
@@ -41398,6 +41401,8 @@ arq = assign(arq, __webpack_require__(119)["default"]);
 
 arq = assign(arq, __webpack_require__(125)["default"]);
 
+arq = assign(arq, __webpack_require__(282)["default"]);
+
 keys_arq = keys(arq);
 
 side_effects_f = function(arg) {
@@ -41508,7 +41513,7 @@ arq['gl_render'] = function(arg) {
     return dispatch({
       type: 'render_loop_iterate'
     });
-  }, 10);
+  }, 1000);
   return dispatch({
     type: 'render_loop_activated',
     payload: {
@@ -61394,6 +61399,74 @@ game_layer_dispatch({
     gui_dispatch: gui_dispatch
   }
 });
+
+
+/***/ }),
+/* 282 */
+/***/ (function(module, exports) {
+
+var arq, got_answer, got_offer, got_remote_stream;
+
+got_remote_stream = function(e) {
+  return c('got remote stream');
+};
+
+got_offer = function(desc) {
+  pc.setLocalDescription(desc);
+  return sendOffer(desc);
+};
+
+got_answer = function(desc) {
+  return pc.setRemoteDescription(desc);
+};
+
+arq = {};
+
+arq['init_webrtc'] = function(arg) {
+  var dispatch, peer_connection, remote_connection, send_channel, state;
+  state = arg.state, dispatch = arg.dispatch;
+  c('Initiating webrtc 989999999999999999999999999999999999999999999999');
+  peer_connection = new RTCPeerConnection();
+  send_channel = peer_connection.createDataChannel('send_channel');
+  send_channel.onopen = function() {
+    return c('send_channel opened');
+  };
+  send_channel.onclose = function() {
+    return c('send_channel closed');
+  };
+  c('pc', peer_connection);
+  remote_connection = new RTCPeerConnection();
+  remote_connection.ondatachannel = function() {
+    return c('receiving on remote');
+  };
+  peer_connection.onicecandidate = function(e) {
+    c('on ice candidate peer');
+    return remote_connection.onicecandidate = function(e) {
+      return c('remote_connection has on ice candidate');
+    };
+  };
+  return peer_connection.createOffer().then(function(offer) {
+    c('created offer', offer);
+    return peer_connection.setLocalDescription(offer);
+  }).then(function() {
+    return remote_connection.setRemoteDescription(peer_connection.localDescription);
+  }).then(function() {
+    var answer;
+    answer = remote_connection.createAnswer();
+    c('remote connection created answer', answer);
+    return answer;
+  }).then(function(answer) {
+    c('have answer', answer);
+    return remote_connection.setLocalDescription(answer);
+  }).then((function(_this) {
+    return function() {
+      peer_connection.setRemoteDescription(remote_connection.localDescription);
+      return c('done');
+    };
+  })(this));
+};
+
+exports["default"] = arq;
 
 
 /***/ })

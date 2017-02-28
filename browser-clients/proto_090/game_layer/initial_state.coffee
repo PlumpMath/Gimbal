@@ -10,6 +10,8 @@ exports.default = ({ primus })->
 
         desires:
             "#{shortid()}":
+                type: 'init_webrtc'
+            "#{shortid()}":
                 type: 'init:init_webgl'
             "#{shortid()}":
                 type: 'setup:workers'
