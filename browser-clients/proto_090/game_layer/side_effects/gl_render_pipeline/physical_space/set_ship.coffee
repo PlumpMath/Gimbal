@@ -9,13 +9,13 @@ exports.default = ->
             del_vel_x, del_vel_y, del_rota_rad,
             shots_fired, del_time
         } = deltas
-        c 'deltas', deltas
+        # c 'deltas', deltas
         {
             pos_x, pos_y, vel_x, vel_y, rota_rad
         } = ship_state
-        c 'ship_state', ship_state
+        # c 'ship_state', ship_state
         new_vel_x = vel_x + del_vel_x
-        c 'new_vel_x', new_vel_x
+        # c 'new_vel_x', new_vel_x
         new_vel_y = vel_y + del_vel_y
         new_rota_rad = rota_rad + del_rota_rad
         cursor_x = (pos_x + (del_time * new_vel_x)) % canvas.width

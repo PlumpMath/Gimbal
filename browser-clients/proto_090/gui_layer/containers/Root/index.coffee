@@ -1,23 +1,24 @@
 
+require '../../globals/core.coffee'
+require '../../globals/styles.coffee'
+
+
+
+
+main_menu = rc require('../../scenes/main_menu.coffee').default
+
 
 
 exports.default = ({ game_layer_dispatch }) ->
 
-    require '../../globals/core.coffee'
+
 
     gui_root_el = document.getElementById 'gui_root'
 
     Provider = rc require('react-redux').Provider
     store = require('../../store/create.coffee').default { game_layer_dispatch }
 
-    scaffold = rr
-        render: ->
-            c 'rendering scaffold'
-            h1
-                style:
-                    textAlign: 'center'
-                    color: 'magenta'
-                "GUI_ROOT"
+
 
     gui_root_component = rr
         render: ->
@@ -25,7 +26,7 @@ exports.default = ({ game_layer_dispatch }) ->
             { ww, wh } = @props
             Provider
                 store: store
-                scaffold()
+                main_menu { ww, wh }
 
 
     gui_dispatch: store.dispatch

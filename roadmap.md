@@ -7,9 +7,11 @@
 
 - after doing multi-threading should enable a general interface protocol for linux socket communication with other processes on the same linux system, for the server process of course, and simultaneously for other services ('micro' or not) out over websockets.  this way the node.js codebase doesn't become an obstacle to problems to solve on the server side that are best solved in other languages. (planned)
 
-- implement audio.  webrtc asap,  (planned asap as soon as get spacewar refactor sort of happening in client)
+- speed up browser-client performance with web-assembly (can use Rust) [web-assembly](https://hacks.mozilla.org/2017/02/creating-and-working-with-webassembly-modules/)
 
-- implement webrtc bare-bones in the browser-clients (planned).  this is for audio (see above) as well as advanced networking
+- implement audio.   (planned asap as soon as get spacewar refactor sort of happening in client)
+
+- implement webrtc bare-bones in the browser-clients (planned). data p2p for gaming
 
 - implement 3d games: spacewar the dos game clone is just a placeholder, as this project is intended to have general applicability to networked games and other networked applications including military or commercial network applications broadly, in principle.  (tldr: planned, other games w better graphics, other similar applications like drone sensor consolidation)
 

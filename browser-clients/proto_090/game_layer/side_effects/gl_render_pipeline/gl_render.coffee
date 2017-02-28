@@ -74,7 +74,7 @@ arq['gl_render'] = ({ state, dispatch }) ->
     render_loop_interval = setInterval ->
         dispatch
             type: 'render_loop_iterate'
-    , 1000
+    , 10
     dispatch
         type: 'render_loop_activated'
         payload: { render_loop_interval }

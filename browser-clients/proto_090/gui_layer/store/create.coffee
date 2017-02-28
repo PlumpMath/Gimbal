@@ -29,6 +29,7 @@ exports.default = ({ game_layer_dispatch }) ->
     store.subscribe set
 
     state_js = imm_initial_state.toJS()
+    c 'state_js initial', state_js
     side_effects { state_js }
 
     store
