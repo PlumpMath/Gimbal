@@ -1,7 +1,5 @@
 
 
-
-
 dev_server = ({ env, cs, redis }) ->
 
     public_dir = path.resolve path.join('..', '/browser-clients', '/public')
@@ -29,11 +27,8 @@ dev_server = ({ env, cs, redis }) ->
     # else
     #     index = '/dev_index_090.html'
 
-
     app_spacewar = express()
-
     app_brujo = express()
-
 
     express_session = require 'express-session'
     connect_redis = require 'connect-redis'
